@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { theme } from '@/theme';
 
 export default function RecordingTab() {
   return (
@@ -15,23 +16,24 @@ export default function RecordingTab() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8fafc',
+    backgroundColor: theme.semanticColors.background,
   },
   content: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    padding: theme.spacingPatterns.screen.horizontal,
   },
   title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#1f2937',
-    marginBottom: 8,
+    ...theme.textStyles.h1,
+    color: theme.semanticColors.text.primary,
+    marginBottom: theme.spacing[2],
+    includeFontPadding: false,
   },
   subtitle: {
-    fontSize: 16,
-    color: '#6b7280',
+    ...theme.textStyles.body1,
+    color: theme.semanticColors.text.secondary,
     textAlign: 'center',
+    includeFontPadding: false,
   },
 });

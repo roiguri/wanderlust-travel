@@ -15,6 +15,7 @@ import { getUserProfile } from '@/lib/api';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import { User, Settings, LogOut, Mail, Calendar, CreditCard as Edit3 } from 'lucide-react-native';
+import { theme } from '@/theme';
 
 interface UserProfile {
   id: string;
@@ -99,7 +100,7 @@ export default function ProfileTab() {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#FF385C" />
+          <ActivityIndicator size="large" color={theme.colors.primary[500]} />
           <Text style={styles.loadingText}>Loading profile...</Text>
         </View>
       </SafeAreaView>
@@ -131,7 +132,7 @@ export default function ProfileTab() {
           <View style={styles.header}>
             <Text style={styles.title}>Profile</Text>
             <TouchableOpacity style={styles.settingsButton} activeOpacity={0.7}>
-              <Settings size={24} color="#717171" />
+              <Settings size={24} color={theme.semanticColors.text.secondary} />
             </TouchableOpacity>
           </View>
 
@@ -146,18 +147,18 @@ export default function ProfileTab() {
                   />
                 ) : (
                   <View style={styles.avatarPlaceholder}>
-                    <User size={40} color="#ffffff" />
+                    <User size={40} color={theme.semanticColors.text.inverse} />
                   </View>
                 )}
                 <TouchableOpacity style={styles.editAvatarButton} activeOpacity={0.7}>
-                  <Edit3 size={16} color="#ffffff" />
+                  <Edit3 size={16} color={theme.semanticColors.text.inverse} />
                 </TouchableOpacity>
               </View>
               
               <View style={styles.profileInfo}>
                 <Text style={styles.username}>{profile?.username || 'Unknown User'}</Text>
                 <View style={styles.emailContainer}>
-                  <Mail size={16} color="#717171" />
+                  <Mail size={16} color={theme.semanticColors.text.secondary} />
                   <Text style={styles.email}>{profile?.email || 'No email'}</Text>
                 </View>
               </View>
@@ -170,7 +171,7 @@ export default function ProfileTab() {
             
             <View style={styles.infoRow}>
               <View style={styles.infoLabel}>
-                <User size={20} color="#717171" />
+                <User size={20} color={theme.semanticColors.text.secondary} />
                 <Text style={styles.infoLabelText}>Username</Text>
               </View>
               <Text style={styles.infoValue}>{profile?.username || 'Not set'}</Text>
@@ -178,7 +179,7 @@ export default function ProfileTab() {
 
             <View style={styles.infoRow}>
               <View style={styles.infoLabel}>
-                <Mail size={20} color="#717171" />
+                <Mail size={20} color={theme.semanticColors.text.secondary} />
                 <Text style={styles.infoLabelText}>Email</Text>
               </View>
               <Text style={styles.infoValue}>{profile?.email || 'Not set'}</Text>
@@ -186,7 +187,7 @@ export default function ProfileTab() {
 
             <View style={styles.infoRow}>
               <View style={styles.infoLabel}>
-                <Calendar size={20} color="#717171" />
+                <Calendar size={20} color={theme.semanticColors.text.secondary} />
                 <Text style={styles.infoLabelText}>Member since</Text>
               </View>
               <Text style={styles.infoValue}>
@@ -239,13 +240,13 @@ export default function ProfileTab() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8fafc',
+    backgroundColor: theme.semanticColors.background,
   },
   scrollView: {
     flex: 1,
   },
   content: {
-    padding: 16,
+    padding: theme.spacingPatterns.screen.horizontal,
   },
   loadingContainer: {
     flex: 1,
@@ -253,21 +254,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   loadingText: {
-    marginTop: 16,
-    fontSize: 16,
-    color: '#717171',
+    marginTop: theme.spacing[4],
+    ...theme.textStyles.body1,
+    color: theme.semanticColors.text.secondary,
+    includeFontPadding: false,
   },
   errorContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    padding: theme.spacing[5],
   },
   errorText: {
-    fontSize: 16,
-    color: '#dc2626',
+    ...theme.textStyles.body1,
+    color: theme.colors.error,
     textAlign: 'center',
-    marginBottom: 20,
+    marginBottom: theme.spacing[5],
+    includeFontPadding: false,
   },
   retryButton: {
     minWidth: 120,
@@ -276,18 +279,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: theme.spacing[6],
   },
   title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#222222',
+    ...theme.textStyles.h1,
+    color: theme.semanticColors.text.primary,
+    includeFontPadding: false,
   },
   settingsButton: {
-    padding: 8,
+    padding: theme.spacing[2],
   },
   profileCard: {
-    marginBottom: 24,
+    marginBottom: theme.spacing[6],
   },
   profileHeader: {
     flexDirection: 'row',
@@ -295,7 +298,7 @@ const styles = StyleSheet.create({
   },
   avatarContainer: {
     position: 'relative',
-    marginRight: 16,
+    marginRight: theme.spacing[4],
   },
   avatar: {
     width: 80,
@@ -306,7 +309,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: '#FF385C',
+    backgroundColor: theme.colors.primary[500],
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -317,46 +320,47 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: '#FF385C',
+    backgroundColor: theme.colors.primary[500],
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: '#ffffff',
+    borderColor: theme.semanticColors.surface,
   },
   profileInfo: {
     flex: 1,
   },
   username: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#222222',
-    marginBottom: 8,
+    ...theme.textStyles.h3,
+    color: theme.semanticColors.text.primary,
+    marginBottom: theme.spacing[2],
+    includeFontPadding: false,
   },
   emailContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   email: {
-    fontSize: 16,
-    color: '#717171',
-    marginLeft: 8,
+    ...theme.textStyles.body1,
+    color: theme.semanticColors.text.secondary,
+    marginLeft: theme.spacing[2],
+    includeFontPadding: false,
   },
   infoCard: {
-    marginBottom: 24,
+    marginBottom: theme.spacing[6],
   },
   sectionTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#222222',
-    marginBottom: 16,
+    ...theme.textStyles.h4,
+    color: theme.semanticColors.text.primary,
+    marginBottom: theme.spacing[4],
+    includeFontPadding: false,
   },
   infoRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 12,
+    paddingVertical: theme.spacing[3],
     borderBottomWidth: 1,
-    borderBottomColor: '#f1f5f9',
+    borderBottomColor: theme.colors.gray[100],
   },
   infoLabel: {
     flexDirection: 'row',
@@ -364,39 +368,42 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   infoLabelText: {
-    fontSize: 16,
-    color: '#717171',
-    marginLeft: 12,
+    ...theme.textStyles.body1,
+    color: theme.semanticColors.text.secondary,
+    marginLeft: theme.spacing[3],
+    includeFontPadding: false,
   },
   infoValue: {
-    fontSize: 16,
-    color: '#222222',
-    fontWeight: '500',
+    ...theme.textStyles.body1,
+    color: theme.semanticColors.text.primary,
+    fontWeight: theme.typography.fontWeights.medium,
     textAlign: 'right',
     flex: 1,
+    includeFontPadding: false,
   },
   errorCard: {
-    backgroundColor: '#fef2f2',
+    backgroundColor: theme.colors.error + '10',
     borderWidth: 1,
-    borderColor: '#fecaca',
-    marginBottom: 24,
+    borderColor: theme.colors.error + '30',
+    marginBottom: theme.spacing[6],
   },
   errorCardText: {
-    color: '#dc2626',
-    fontSize: 14,
-    marginBottom: 12,
+    color: theme.colors.error,
+    ...theme.textStyles.body2,
+    marginBottom: theme.spacing[3],
+    includeFontPadding: false,
   },
   refreshButton: {
     alignSelf: 'flex-start',
   },
   actionsContainer: {
-    gap: 16,
+    gap: theme.spacing[4],
   },
   actionButton: {
     marginBottom: 0,
   },
   signOutButton: {
-    backgroundColor: '#dc2626',
-    borderColor: '#dc2626',
+    backgroundColor: theme.colors.error,
+    borderColor: theme.colors.error,
   },
 });

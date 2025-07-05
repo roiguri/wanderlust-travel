@@ -15,6 +15,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import FormInput from '@/components/ui/FormInput';
 import Button from '@/components/ui/Button';
 import { Eye, EyeOff } from 'lucide-react-native';
+import { theme } from '@/theme';
 
 export default function LoginScreen() {
   const { login } = useAuth();
@@ -117,9 +118,9 @@ export default function LoginScreen() {
                   activeOpacity={0.7}
                 >
                   {showPassword ? (
-                    <EyeOff size={20} color="#717171" />
+                    <EyeOff size={20} color={theme.semanticColors.text.secondary} />
                   ) : (
-                    <Eye size={20} color="#717171" />
+                    <Eye size={20} color={theme.semanticColors.text.secondary} />
                   )}
                 </TouchableOpacity>
               </View>
@@ -158,7 +159,7 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8fafc',
+    backgroundColor: theme.semanticColors.background,
   },
   keyboardView: {
     flex: 1,
@@ -181,99 +182,104 @@ const styles = StyleSheet.create({
   },
   headerContent: {
     position: 'absolute',
-    bottom: 40,
-    left: 24,
-    right: 24,
+    bottom: theme.spacing[10],
+    left: theme.spacingPatterns.screen.horizontal,
+    right: theme.spacingPatterns.screen.horizontal,
   },
   welcomeText: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#ffffff',
-    marginBottom: 8,
+    ...theme.textStyles.h1,
+    color: theme.semanticColors.text.inverse,
+    marginBottom: theme.spacing[2],
+    includeFontPadding: false,
   },
   subtitle: {
-    fontSize: 16,
-    color: '#ffffff',
+    ...theme.textStyles.body1,
+    color: theme.semanticColors.text.inverse,
     opacity: 0.9,
+    includeFontPadding: false,
   },
   formContainer: {
     flex: 1,
-    backgroundColor: '#ffffff',
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    marginTop: -24,
-    paddingTop: 32,
-    paddingHorizontal: 24,
-    paddingBottom: 24,
+    backgroundColor: theme.semanticColors.surface,
+    borderTopLeftRadius: theme.borderRadius['3xl'],
+    borderTopRightRadius: theme.borderRadius['3xl'],
+    marginTop: -theme.spacing[6],
+    paddingTop: theme.spacing[8],
+    paddingHorizontal: theme.spacingPatterns.screen.horizontal,
+    paddingBottom: theme.spacingPatterns.screen.horizontal,
   },
   form: {
     flex: 1,
   },
   formTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#222222',
-    marginBottom: 24,
+    ...theme.textStyles.h3,
+    color: theme.semanticColors.text.primary,
+    marginBottom: theme.spacing[6],
     textAlign: 'center',
+    includeFontPadding: false,
   },
   errorContainer: {
-    backgroundColor: '#fef2f2',
+    backgroundColor: theme.colors.error + '10', // 10% opacity
     borderWidth: 1,
-    borderColor: '#fecaca',
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 16,
+    borderColor: theme.colors.error + '30', // 30% opacity
+    borderRadius: theme.borderRadius.lg,
+    padding: theme.spacing[3],
+    marginBottom: theme.spacing[4],
   },
   errorText: {
-    color: '#dc2626',
-    fontSize: 14,
-    fontWeight: '500',
+    color: theme.colors.error,
+    ...theme.textStyles.body2,
+    fontWeight: theme.typography.fontWeights.medium,
     textAlign: 'center',
+    includeFontPadding: false,
   },
   inputContainer: {
-    marginBottom: 20,
+    marginBottom: theme.spacing[5],
   },
   passwordContainer: {
     position: 'relative',
   },
   passwordToggle: {
     position: 'absolute',
-    right: 16,
+    right: theme.spacing[4],
     top: 44,
-    padding: 4,
+    padding: theme.spacing[1],
   },
   loginButton: {
-    marginTop: 8,
-    marginBottom: 24,
+    marginTop: theme.spacing[2],
+    marginBottom: theme.spacing[6],
   },
   divider: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 24,
+    marginVertical: theme.spacing[6],
   },
   dividerLine: {
     flex: 1,
     height: 1,
-    backgroundColor: '#e5e7eb',
+    backgroundColor: theme.semanticColors.border.light,
   },
   dividerText: {
-    marginHorizontal: 16,
-    fontSize: 14,
-    color: '#6b7280',
+    marginHorizontal: theme.spacing[4],
+    ...theme.textStyles.body2,
+    color: theme.semanticColors.text.secondary,
+    includeFontPadding: false,
   },
   signupContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 16,
+    marginTop: theme.spacing[4],
   },
   signupText: {
-    fontSize: 16,
-    color: '#6b7280',
+    ...theme.textStyles.body1,
+    color: theme.semanticColors.text.secondary,
+    includeFontPadding: false,
   },
   signupLink: {
-    fontSize: 16,
-    color: '#FF385C',
-    fontWeight: '600',
+    ...theme.textStyles.body1,
+    color: theme.colors.primary[500],
+    fontWeight: theme.typography.fontWeights.semibold,
+    includeFontPadding: false,
   },
 });
