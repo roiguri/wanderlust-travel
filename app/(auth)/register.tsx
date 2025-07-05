@@ -303,11 +303,13 @@ const styles = StyleSheet.create({
     ...theme.textStyles.h1,
     color: theme.semanticColors.text.inverse,
     marginBottom: theme.spacing[2],
+    includeFontPadding: false,
   },
   subtitle: {
     ...theme.textStyles.body1,
     color: theme.semanticColors.text.inverse,
     opacity: 0.9,
+    includeFontPadding: false,
   },
   formContainer: {
     flex: 1,
@@ -327,6 +329,7 @@ const styles = StyleSheet.create({
     color: theme.semanticColors.text.primary,
     marginBottom: theme.spacing[6],
     textAlign: 'center',
+    includeFontPadding: false,
   },
   errorContainer: {
     backgroundColor: theme.colors.error + '10',
@@ -341,6 +344,7 @@ const styles = StyleSheet.create({
     ...theme.textStyles.body2,
     fontWeight: theme.typography.fontWeights.medium,
     textAlign: 'center',
+    includeFontPadding: false,
   },
   inputContainer: {
     marginBottom: theme.spacing[5],
@@ -365,6 +369,7 @@ const styles = StyleSheet.create({
     fontWeight: theme.typography.fontWeights.semibold,
     color: theme.colors.gray[700],
     marginBottom: theme.spacing[2],
+    includeFontPadding: false,
   },
   requirement: {
     flexDirection: 'row',
@@ -375,6 +380,7 @@ const styles = StyleSheet.create({
     ...theme.textStyles.body2,
     marginLeft: theme.spacing[2],
     fontWeight: theme.typography.fontWeights.medium,
+    includeFontPadding: false,
   },
   matchContainer: {
     marginBottom: theme.spacing[4],
@@ -397,6 +403,7 @@ const styles = StyleSheet.create({
     marginHorizontal: theme.spacing[4],
     ...theme.textStyles.body2,
     color: theme.semanticColors.text.secondary,
+    includeFontPadding: false,
   },
   loginContainer: {
     flexDirection: 'row',
@@ -407,10 +414,12 @@ const styles = StyleSheet.create({
   loginText: {
     ...theme.textStyles.body1,
     color: theme.semanticColors.text.secondary,
+    includeFontPadding: false,
   },
   loginLink: {
     ...theme.textStyles.body1,
     color: theme.colors.primary[500],
     fontWeight: theme.typography.fontWeights.semibold,
+    includeFontPadding: false,
   },
 });

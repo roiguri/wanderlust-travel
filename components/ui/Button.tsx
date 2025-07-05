@@ -104,6 +104,8 @@ const styles = StyleSheet.create({
   baseText: {
     ...theme.textStyles.button,
     textAlign: 'center',
+    includeFontPadding: false,
+    textAlignVertical: 'center',
   },
   primaryText: {
     color: theme.semanticColors.button.primary.text,

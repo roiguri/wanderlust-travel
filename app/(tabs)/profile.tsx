@@ -257,6 +257,7 @@ const styles = StyleSheet.create({
     marginTop: theme.spacing[4],
     ...theme.textStyles.body1,
     color: theme.semanticColors.text.secondary,
+    includeFontPadding: false,
   },
   errorContainer: {
     flex: 1,
@@ -269,6 +270,7 @@ const styles = StyleSheet.create({
     color: theme.colors.error,
     textAlign: 'center',
     marginBottom: theme.spacing[5],
+    includeFontPadding: false,
   },
   retryButton: {
     minWidth: 120,
@@ -282,6 +284,7 @@ const styles = StyleSheet.create({
   title: {
     ...theme.textStyles.h1,
     color: theme.semanticColors.text.primary,
+    includeFontPadding: false,
   },
   settingsButton: {
     padding: theme.spacing[2],
@@ -330,6 +333,7 @@ const styles = StyleSheet.create({
     ...theme.textStyles.h3,
     color: theme.semanticColors.text.primary,
     marginBottom: theme.spacing[2],
+    includeFontPadding: false,
   },
   emailContainer: {
     flexDirection: 'row',
@@ -339,6 +343,7 @@ const styles = StyleSheet.create({
     ...theme.textStyles.body1,
     color: theme.semanticColors.text.secondary,
     marginLeft: theme.spacing[2],
+    includeFontPadding: false,
   },
   infoCard: {
     marginBottom: theme.spacing[6],
@@ -347,6 +352,7 @@ const styles = StyleSheet.create({
     ...theme.textStyles.h4,
     color: theme.semanticColors.text.primary,
     marginBottom: theme.spacing[4],
+    includeFontPadding: false,
   },
   infoRow: {
     flexDirection: 'row',
@@ -365,6 +371,7 @@ const styles = StyleSheet.create({
     ...theme.textStyles.body1,
     color: theme.semanticColors.text.secondary,
     marginLeft: theme.spacing[3],
+    includeFontPadding: false,
   },
   infoValue: {
     ...theme.textStyles.body1,
@@ -372,6 +379,7 @@ const styles = StyleSheet.create({
     fontWeight: theme.typography.fontWeights.medium,
     textAlign: 'right',
     flex: 1,
+    includeFontPadding: false,
   },
   errorCard: {
     backgroundColor: theme.colors.error + '10',
@@ -383,6 +391,7 @@ const styles = StyleSheet.create({
     color: theme.colors.error,
     ...theme.textStyles.body2,
     marginBottom: theme.spacing[3],
+    includeFontPadding: false,
   },
   refreshButton: {
     alignSelf: 'flex-start',

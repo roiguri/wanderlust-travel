@@ -28,10 +28,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#1f2937',
     marginBottom: 8,
+    includeFontPadding: false,
   },
   subtitle: {
     fontSize: 16,
     color: '#6b7280',
     textAlign: 'center',
+    includeFontPadding: false,
   },
 });

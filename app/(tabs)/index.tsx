@@ -182,12 +182,14 @@ const styles = StyleSheet.create({
     color: theme.semanticColors.text.primary,
     marginBottom: theme.spacing[2],
     textAlign: 'center',
+    includeFontPadding: false,
   },
   subtitle: {
     ...theme.textStyles.body1,
     color: theme.semanticColors.text.secondary,
     textAlign: 'center',
     marginBottom: theme.spacing[6],
+    includeFontPadding: false,
   },
   section: {
     marginBottom: theme.spacing[6],
@@ -196,12 +198,13 @@ const styles = StyleSheet.create({
     ...theme.textStyles.h4,
     color: theme.semanticColors.text.primary,
     marginBottom: theme.spacing[2],
+    includeFontPadding: false,
   },
   sectionDescription: {
     ...theme.textStyles.body2,
     color: theme.semanticColors.text.secondary,
     marginBottom: theme.spacing[4],
-    lineHeight: 20,
+    includeFontPadding: false,
   },
   buttonRow: {
     flexDirection: 'row',
@@ -216,10 +219,11 @@ const styles = StyleSheet.create({
     ...theme.textStyles.h5,
     color: theme.semanticColors.text.primary,
     marginBottom: theme.spacing[2],
+    includeFontPadding: false,
   },
   cardDescription: {
     ...theme.textStyles.body2,
     color: theme.semanticColors.text.secondary,
-    lineHeight: 20,
+    includeFontPadding: false,
   },
 });

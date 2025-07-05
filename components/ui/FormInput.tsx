@@ -66,6 +66,7 @@ const styles = StyleSheet.create({
     ...theme.textStyles.label,
     color: theme.semanticColors.text.primary,
     marginBottom: theme.spacing[2],
+    includeFontPadding: false,
   },
   required: {
     color: theme.colors.error,
@@ -82,6 +83,8 @@ const styles = StyleSheet.create({
     color: theme.semanticColors.text.primary,
     minHeight: theme.sizes.input.height,
     ...theme.shadows.xs,
+    includeFontPadding: false,
+    textAlignVertical: 'center',
   },
   inputFocused: {
     borderColor: theme.colors.primary[500],
@@ -95,5 +98,6 @@ const styles = StyleSheet.create({
     color: theme.colors.error,
     marginTop: theme.spacing[1],
     fontWeight: theme.typography.fontWeights.medium,
+    includeFontPadding: false,
   },
 });
