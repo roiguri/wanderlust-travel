@@ -1,61 +1,60 @@
-import { authenticateRequest, createAuthenticatedResponse, createUnauthenticatedResponse } from '@/middleware/auth';
-import { getUserById } from '@/lib/auth';
+import { supabase } from '@/lib/database';
 
-// GET /users/profile - Get current user's profile
 export async function GET(request: Request) {
   try {
-    const authResult = await authenticateRequest(request);
+    const authHeader = request.headers.get('Authorization');
     
-    if (!authResult.authenticated) {
-      return createUnauthenticatedResponse(authResult.error);
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return new Response(
+        JSON.stringify({ error: 'Missing or invalid authorization header' }),
+        {
+          status: 401,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
     }
 
-    return createAuthenticatedResponse({
-      success: true,
-      data: {
-        user: authResult.user
-      }
-    });
+    const token = authHeader.substring(7); // Remove 'Bearer ' prefix
 
-  } catch (error: any) {
+    // Verify the token with Supabase
+    const { data: { user }, error } = await supabase.auth.getUser(token);
+
+    if (error || !user) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid or expired token' }),
+        {
+          status: 401,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+    }
+
+    // Return user profile data
+    return new Response(
+      JSON.stringify({
+        user: {
+          id: user.id,
+          email: user.email,
+          username: user.user_metadata?.username || user.user_metadata?.display_name || user.email?.split('@')[0] || '',
+          profile_picture_url: user.user_metadata?.profile_picture_url,
+          preferences: user.user_metadata?.preferences || {},
+          created_at: user.created_at,
+          updated_at: user.updated_at,
+        }
+      }),
+      {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
+  } catch (error) {
     console.error('Get profile error:', error);
-
-    return createAuthenticatedResponse({
-      error: 'Failed to get profile',
-      message: 'An error occurred while fetching user profile'
-    }, 500);
-  }
-}
-
-// PUT /users/profile - Update current user's profile
-export async function PUT(request: Request) {
-  try {
-    const authResult = await authenticateRequest(request);
-    
-    if (!authResult.authenticated) {
-      return createUnauthenticatedResponse(authResult.error);
-    }
-
-    const body = await request.json();
-    const { username, profile_picture_url, preferences } = body;
-
-    // TODO: Implement profile update logic
-    // This would include validation and database updates
-
-    return createAuthenticatedResponse({
-      success: true,
-      message: 'Profile updated successfully',
-      data: {
-        user: authResult.user
+    return new Response(
+      JSON.stringify({ error: 'An error occurred while fetching user profile' }),
+      {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
       }
-    });
-
-  } catch (error: any) {
-    console.error('Update profile error:', error);
-
-    return createAuthenticatedResponse({
-      error: 'Failed to update profile',
-      message: 'An error occurred while updating user profile'
-    }, 500);
+    );
   }
 }
