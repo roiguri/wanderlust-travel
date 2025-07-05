@@ -53,12 +53,17 @@ export async function POST(request: Request) {
 
     return new Response(
       JSON.stringify({
-        message: 'Registration successful',
         user: {
           id: authData.user?.id,
           email: authData.user?.email,
-          name: authData.user?.user_metadata?.name,
+          username: authData.user?.user_metadata?.name || '',
+          profile_picture_url: authData.user?.user_metadata?.profile_picture_url,
+          preferences: {},
+          created_at: authData.user?.created_at || new Date().toISOString(),
+          updated_at: authData.user?.updated_at || new Date().toISOString(),
         },
+        token: authData.session?.access_token || '',
+        refreshToken: authData.session?.refresh_token || '',
       }),
       {
         status: 201,

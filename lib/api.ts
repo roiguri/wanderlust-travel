@@ -47,7 +47,7 @@ class ApiError extends Error {
 async function apiFetch<T>(
   endpoint: string,
   options: RequestInit = {}
-): Promise<ApiResponse<T>> {
+): Promise<T> {
   try {
     const url = endpoint;
     
@@ -69,7 +69,7 @@ async function apiFetch<T>(
       );
     }
 
-    return data;
+    return data as T;
   } catch (error) {
     if (error instanceof ApiError) {
       throw error;
@@ -87,7 +87,7 @@ async function apiFetch<T>(
 async function authenticatedFetch<T>(
   endpoint: string,
   options: RequestInit = {}
-): Promise<ApiResponse<T>> {
+): Promise<T> {
   const token = await getToken();
   
   if (!token) {
@@ -136,11 +136,7 @@ export async function registerUser(data: RegisterData): Promise<AuthResponse> {
     body: JSON.stringify(data),
   });
 
-  if (response.success && response.data) {
-    return response.data;
-  }
-
-  throw new ApiError(response.message || 'Registration failed', 400);
+  return response;
 }
 
 export async function loginUser(data: LoginData): Promise<AuthResponse> {
@@ -149,11 +145,7 @@ export async function loginUser(data: LoginData): Promise<AuthResponse> {
     body: JSON.stringify(data),
   });
 
-  if (response.success && response.data) {
-    return response.data;
-  }
-
-  throw new ApiError(response.message || 'Login failed', 401);
+  return response;
 }
 
 export async function refreshAuthToken(): Promise<void> {
@@ -168,11 +160,7 @@ export async function refreshAuthToken(): Promise<void> {
     body: JSON.stringify({ refreshToken }),
   });
 
-  if (response.success && response.data) {
-    await storeTokens(response.data.token, response.data.refreshToken);
-  } else {
-    throw new ApiError(response.message || 'Token refresh failed', 401);
-  }
+  await storeTokens(response.token, response.refreshToken);
 }
 
 export async function logoutUser(): Promise<void> {
@@ -189,11 +177,7 @@ export async function logoutUser(): Promise<void> {
 }
 
 export async function getUserProfile() {
-  const response = await authenticatedFetch('/users/profile');
+  const response = await authenticatedFetch<{ user: any }>('/users/profile');
   
-  if (response.success && response.data) {
-    return response.data.user;
-  }
-
-  throw new ApiError(response.message || 'Failed to get user profile', 400);
+  return response.user;
 }
