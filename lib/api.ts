@@ -165,9 +165,13 @@ export async function refreshAuthToken(): Promise<void> {
 
 export async function logoutUser(): Promise<void> {
   try {
-    await authenticatedFetch('/auth/logout', {
-      method: 'POST',
-    });
+    const token = await getToken();
+    
+    if (token) {
+      await authenticatedFetch('/auth/logout', {
+        method: 'POST',
+      });
+    }
   } catch (error) {
     // Even if logout fails on server, clear local data
     console.warn('Logout request failed:', error);

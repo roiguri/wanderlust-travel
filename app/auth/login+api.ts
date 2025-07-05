@@ -38,9 +38,14 @@ export async function POST(request: Request) {
         user: {
           id: authData.user?.id,
           email: authData.user?.email,
-          name: authData.user?.user_metadata?.name,
+          username: authData.user?.user_metadata?.username || authData.user?.email?.split('@')[0] || '',
+          profile_picture_url: authData.user?.user_metadata?.profile_picture_url,
+          preferences: authData.user?.user_metadata?.preferences || {},
+          created_at: authData.user?.created_at || new Date().toISOString(),
+          updated_at: authData.user?.updated_at || new Date().toISOString(),
         },
-        session: authData.session,
+        token: authData.session?.access_token,
+        refreshToken: authData.session?.refresh_token,
       }),
       {
         status: 200,
