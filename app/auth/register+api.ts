@@ -1,5 +1,4 @@
 import { supabase } from '@/lib/database';
-import bcrypt from 'bcryptjs';
 
 export async function POST(request: Request) {
   try {
@@ -11,19 +10,6 @@ export async function POST(request: Request) {
         JSON.stringify({ error: 'Email and password are required' }),
         {
           status: 400,
-          headers: { 'Content-Type': 'application/json' },
-        }
-      );
-    }
-
-    // Check if user already exists using Supabase auth
-    const { data: existingUser } = await supabase.auth.admin.getUserByEmail(email);
-    
-    if (existingUser.user) {
-      return new Response(
-        JSON.stringify({ error: 'User already exists' }),
-        {
-          status: 409,
           headers: { 'Content-Type': 'application/json' },
         }
       );
@@ -42,6 +28,20 @@ export async function POST(request: Request) {
 
     if (authError) {
       console.error('Registration error:', authError);
+      
+      // Check if the error is due to user already existing
+      if (authError.message?.includes('User already registered') || 
+          authError.message?.includes('already been registered') ||
+          authError.status === 422) {
+        return new Response(
+          JSON.stringify({ error: 'User already exists' }),
+          {
+            status: 409,
+            headers: { 'Content-Type': 'application/json' },
+          }
+        );
+      }
+      
       return new Response(
         JSON.stringify({ error: 'An error occurred during registration. Please try again.' }),
         {
