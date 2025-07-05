@@ -38,7 +38,7 @@ export async function POST(request: Request) {
         user: {
           id: authData.user?.id,
           email: authData.user?.email,
-          username: authData.user?.user_metadata?.username || authData.user?.email?.split('@')[0] || '',
+          username: authData.user?.user_metadata?.username || authData.user?.user_metadata?.display_name || authData.user?.email?.split('@')[0] || '',
           profile_picture_url: authData.user?.user_metadata?.profile_picture_url,
           preferences: authData.user?.user_metadata?.preferences || {},
           created_at: authData.user?.created_at || new Date().toISOString(),

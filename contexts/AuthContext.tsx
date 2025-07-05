@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { router } from 'expo-router';
 import { storeTokens, storeUser, clearAuthData, getUser, isAuthenticated } from '@/lib/storage';
 import { registerUser, loginUser, logoutUser, RegisterData, LoginData, AuthResponse } from '@/lib/api';
 
@@ -104,11 +105,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
       await logoutUser();
       await clearAuthData();
       setUser(null);
+      
+      // Navigate to login page after logout
+      router.replace('/(auth)/login');
     } catch (error) {
       console.error('Logout error:', error);
       // Even if logout fails, clear local state
       await clearAuthData();
       setUser(null);
+      
+      // Navigate to login page even if logout fails
+      router.replace('/(auth)/login');
     } finally {
       setIsLoading(false);
     }

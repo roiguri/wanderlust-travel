@@ -3,7 +3,7 @@ import { supabase } from '@/lib/database';
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { email, password, name } = body;
+    const { email, password, username } = body;
 
     if (!email || !password) {
       return new Response(
@@ -21,7 +21,8 @@ export async function POST(request: Request) {
       password,
       options: {
         data: {
-          name: name || '',
+          username: username || email.split('@')[0],
+          display_name: username || email.split('@')[0],
         }
       }
     });
@@ -56,7 +57,7 @@ export async function POST(request: Request) {
         user: {
           id: authData.user?.id,
           email: authData.user?.email,
-          username: authData.user?.user_metadata?.name || '',
+         username: authData.user?.user_metadata?.username || email.split('@')[0],
           profile_picture_url: authData.user?.user_metadata?.profile_picture_url,
           preferences: {},
           created_at: authData.user?.created_at || new Date().toISOString(),
