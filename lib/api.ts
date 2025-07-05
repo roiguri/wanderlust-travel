@@ -1,7 +1,5 @@
 import { getToken, getRefreshToken, storeTokens, removeTokens } from './storage';
 
-const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:8081';
-
 export interface ApiResponse<T = any> {
   success: boolean;
   message?: string;
@@ -51,7 +49,7 @@ async function apiFetch<T>(
   options: RequestInit = {}
 ): Promise<ApiResponse<T>> {
   try {
-    const url = `${API_URL}${endpoint}`;
+    const url = endpoint;
     
     const response = await fetch(url, {
       headers: {
