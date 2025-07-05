@@ -6,26 +6,27 @@ import {
   Map, 
   User 
 } from 'lucide-react-native';
+import { theme } from '@/theme';
 
 export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#2563eb',
-        tabBarInactiveTintColor: '#6b7280',
+        tabBarActiveTintColor: theme.colors.primary[500],
+        tabBarInactiveTintColor: theme.semanticColors.text.secondary,
         tabBarStyle: {
-          backgroundColor: '#ffffff',
+          backgroundColor: theme.semanticColors.surface,
           borderTopWidth: 1,
-          borderTopColor: '#e5e7eb',
-          paddingBottom: 8,
-          paddingTop: 8,
+          borderTopColor: theme.semanticColors.border.light,
+          paddingBottom: theme.spacing[2],
+          paddingTop: theme.spacing[2],
           height: 80,
         },
         tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: '500',
-          marginTop: 4,
+          fontSize: theme.typography.fontSizes.xs,
+          fontWeight: theme.typography.fontWeights.medium,
+          marginTop: theme.spacing[1],
         },
       }}>
       <Tabs.Screen
