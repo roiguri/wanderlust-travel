@@ -1,134 +1,77 @@
-import { createUser, generateToken, isValidEmail, isValidPassword, isValidUsername } from '@/lib/auth';
-import { initializeDatabase } from '@/lib/database';
+import { supabase } from '@/lib/database';
+import bcrypt from 'bcryptjs';
 
 export async function POST(request: Request) {
   try {
-    // Initialize database if needed
-    await initializeDatabase();
-
     const body = await request.json();
-    const { email, username, password } = body;
+    const { email, password, name } = body;
 
-    // Validate required fields
-    if (!email || !username || !password) {
+    if (!email || !password) {
       return new Response(
-        JSON.stringify({
-          error: 'Missing required fields',
-          message: 'Email, username, and password are required'
-        }),
+        JSON.stringify({ error: 'Email and password are required' }),
         {
           status: 400,
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json' },
         }
       );
     }
 
-    // Validate email format
-    if (!isValidEmail(email)) {
+    // Check if user already exists using Supabase auth
+    const { data: existingUser } = await supabase.auth.admin.getUserByEmail(email);
+    
+    if (existingUser.user) {
       return new Response(
-        JSON.stringify({
-          error: 'Invalid email',
-          message: 'Please provide a valid email address'
-        }),
+        JSON.stringify({ error: 'User already exists' }),
         {
-          status: 400,
-          headers: { 'Content-Type': 'application/json' }
+          status: 409,
+          headers: { 'Content-Type': 'application/json' },
         }
       );
     }
 
-    // Validate username
-    const usernameValidation = isValidUsername(username);
-    if (!usernameValidation.valid) {
-      return new Response(
-        JSON.stringify({
-          error: 'Invalid username',
-          message: usernameValidation.message
-        }),
-        {
-          status: 400,
-          headers: { 'Content-Type': 'application/json' }
+    // Create user with Supabase auth
+    const { data: authData, error: authError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          name: name || '',
         }
-      );
-    }
-
-    // Validate password strength
-    const passwordValidation = isValidPassword(password);
-    if (!passwordValidation.valid) {
-      return new Response(
-        JSON.stringify({
-          error: 'Invalid password',
-          message: passwordValidation.message
-        }),
-        {
-          status: 400,
-          headers: { 'Content-Type': 'application/json' }
-        }
-      );
-    }
-
-    // Create user
-    const user = await createUser({
-      email: email.toLowerCase().trim(),
-      username: username.trim(),
-      password
+      }
     });
 
-    // Generate tokens
-    const accessToken = generateToken(user.id, 'access');
-    const refreshToken = generateToken(user.id, 'refresh');
+    if (authError) {
+      console.error('Registration error:', authError);
+      return new Response(
+        JSON.stringify({ error: 'An error occurred during registration. Please try again.' }),
+        {
+          status: 500,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+    }
 
-    // Return success response
     return new Response(
       JSON.stringify({
-        success: true,
-        message: 'User registered successfully',
-        data: {
-          user: {
-            id: user.id,
-            email: user.email,
-            username: user.username,
-            profile_picture_url: user.profile_picture_url,
-            preferences: user.preferences,
-            created_at: user.created_at,
-            updated_at: user.updated_at
-          },
-          token: accessToken,
-          refreshToken
-        }
+        message: 'Registration successful',
+        user: {
+          id: authData.user?.id,
+          email: authData.user?.email,
+          name: authData.user?.user_metadata?.name,
+        },
       }),
       {
         status: 201,
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
       }
     );
-
-  } catch (error: any) {
+  } catch (error) {
     console.error('Registration error:', error);
-
-    // Handle specific database errors
-    if (error.message.includes('already exists')) {
-      return new Response(
-        JSON.stringify({
-          error: 'User already exists',
-          message: 'A user with this email or username already exists'
-        }),
-        {
-          status: 409,
-          headers: { 'Content-Type': 'application/json' }
-        }
-      );
-    }
-
-    // Handle other errors
     return new Response(
-      JSON.stringify({
-        error: 'Registration failed',
-        message: 'An error occurred during registration. Please try again.'
-      }),
+      JSON.stringify({ error: 'An error occurred during registration. Please try again.' }),
       {
         status: 500,
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
       }
     );
   }

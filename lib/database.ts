@@ -1,63 +1,61 @@
-import { Pool } from 'pg';
+import { createClient } from '@supabase/supabase-js';
 
-// Create a connection pool
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
-});
+const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL!;
+const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!;
 
-// Initialize database tables
-export async function initializeDatabase() {
-  const client = await pool.connect();
-  
-  try {
-    // Create users table
-    await client.query(`
-      CREATE TABLE IF NOT EXISTS users (
-        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        email VARCHAR(255) UNIQUE NOT NULL,
-        username VARCHAR(100) NOT NULL,
-        password_hash VARCHAR(255) NOT NULL,
-        profile_picture_url VARCHAR(500),
-        preferences JSONB DEFAULT '{}',
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-        updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-      );
-    `);
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Missing Supabase environment variables');
+}
 
-    // Create index on email for faster lookups
-    await client.query(`
-      CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
-    `);
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-    // Create index on username for faster lookups
-    await client.query(`
-      CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
-    `);
+// Database helper functions
+export const db = {
+  // Users table operations
+  users: {
+    async create(userData: { email: string; password: string; [key: string]: any }) {
+      const { data, error } = await supabase
+        .from('users')
+        .insert([userData])
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return data;
+    },
 
-    console.log('Database tables initialized successfully');
-  } catch (error) {
-    console.error('Error initializing database:', error);
-    throw error;
-  } finally {
-    client.release();
+    async findByEmail(email: string) {
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('email', email)
+        .single();
+      
+      if (error && error.code !== 'PGRST116') throw error;
+      return data;
+    },
+
+    async findById(id: string) {
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('id', id)
+        .single();
+      
+      if (error && error.code !== 'PGRST116') throw error;
+      return data;
+    },
+
+    async update(id: string, updates: { [key: string]: any }) {
+      const { data, error } = await supabase
+        .from('users')
+        .update(updates)
+        .eq('id', id)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return data;
+    }
   }
-}
-
-// Database query helper
-export async function query(text: string, params?: any[]) {
-  const client = await pool.connect();
-  try {
-    const result = await client.query(text, params);
-    return result;
-  } finally {
-    client.release();
-  }
-}
-
-// Get a client from the pool for transactions
-export async function getClient() {
-  return await pool.connect();
-}
-
-export default pool;
+};
