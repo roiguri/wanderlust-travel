@@ -5,6 +5,7 @@ import {
   ViewStyle,
   TouchableOpacity,
 } from 'react-native';
+import { theme } from '@/theme';
 
 interface CardProps {
   children: React.ReactNode;
@@ -46,40 +47,19 @@ export default function Card({
 
 const styles = StyleSheet.create({
   base: {
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
-    padding: 16,
+    backgroundColor: theme.semanticColors.surface,
+    borderRadius: theme.componentRadius.card,
+    padding: theme.spacing[4],
   },
   default: {
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
+    ...theme.componentShadows.card,
   },
   elevated: {
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    elevation: 6,
+    ...theme.componentShadows.cardElevated,
   },
   outlined: {
     borderWidth: 1,
-    borderColor: '#DDDDDD',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 1,
+    borderColor: theme.semanticColors.border.default,
+    ...theme.shadows.xs,
   },
 });

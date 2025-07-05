@@ -7,6 +7,7 @@ import {
   TextStyle,
   ActivityIndicator,
 } from 'react-native';
+import { theme } from '@/theme';
 
 interface ButtonProps {
   title: string;
@@ -54,7 +55,7 @@ export default function Button({
     >
       {loading ? (
         <ActivityIndicator
-          color={variant === 'primary' ? '#ffffff' : '#FF385C'}
+          color={variant === 'primary' ? theme.semanticColors.button.primary.text : theme.semanticColors.button.primary.background}
           size="small"
         />
       ) : (
@@ -66,68 +67,60 @@ export default function Button({
 
 const styles = StyleSheet.create({
   base: {
-    borderRadius: 8,
+    borderRadius: theme.componentRadius.button,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 2,
+    ...theme.componentShadows.button,
   },
   primary: {
-    backgroundColor: '#FF385C',
-    borderColor: '#FF385C',
+    backgroundColor: theme.semanticColors.button.primary.background,
+    borderColor: theme.semanticColors.button.primary.border,
   },
   secondary: {
-    backgroundColor: '#ffffff',
-    borderColor: '#DDDDDD',
+    backgroundColor: theme.semanticColors.button.secondary.background,
+    borderColor: theme.semanticColors.button.secondary.border,
   },
   disabled: {
-    backgroundColor: '#F7F7F7',
-    borderColor: '#DDDDDD',
-    shadowOpacity: 0,
-    elevation: 0,
+    backgroundColor: theme.semanticColors.button.disabled.background,
+    borderColor: theme.semanticColors.button.disabled.border,
+    ...theme.shadows.none,
   },
   small: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    minHeight: 36,
+    paddingVertical: theme.sizes.button.small.paddingVertical,
+    paddingHorizontal: theme.sizes.button.small.paddingHorizontal,
+    minHeight: theme.sizes.button.small.height,
   },
   medium: {
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    minHeight: 48,
+    paddingVertical: theme.sizes.button.medium.paddingVertical,
+    paddingHorizontal: theme.sizes.button.medium.paddingHorizontal,
+    minHeight: theme.sizes.button.medium.height,
   },
   large: {
-    paddingVertical: 16,
-    paddingHorizontal: 32,
-    minHeight: 56,
+    paddingVertical: theme.sizes.button.large.paddingVertical,
+    paddingHorizontal: theme.sizes.button.large.paddingHorizontal,
+    minHeight: theme.sizes.button.large.height,
   },
   baseText: {
-    fontWeight: '600',
+    ...theme.textStyles.button,
     textAlign: 'center',
   },
   primaryText: {
-    color: '#ffffff',
+    color: theme.semanticColors.button.primary.text,
   },
   secondaryText: {
-    color: '#222222',
+    color: theme.semanticColors.button.secondary.text,
   },
   disabledText: {
-    color: '#BBBBBB',
+    color: theme.semanticColors.button.disabled.text,
   },
   smallText: {
-    fontSize: 14,
+    fontSize: theme.typography.fontSizes.sm,
   },
   mediumText: {
-    fontSize: 16,
+    fontSize: theme.typography.fontSizes.md,
   },
   largeText: {
-    fontSize: 18,
+    fontSize: theme.typography.fontSizes.lg,
   },
 });

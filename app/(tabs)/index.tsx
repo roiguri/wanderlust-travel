@@ -4,6 +4,7 @@ import Button from '@/components/ui/Button';
 import FormInput from '@/components/ui/FormInput';
 import Card from '@/components/ui/Card';
 import { useState } from 'react';
+import { theme } from '@/theme';
 
 export default function ExploreTab() {
   const [email, setEmail] = useState('');
@@ -129,7 +130,7 @@ export default function ExploreTab() {
               onPress={handleLogin}
               variant="primary"
               loading={loading}
-              style={{ marginTop: 8 }}
+              style={{ marginTop: theme.spacing[2] }}
             />
           </Card>
 
@@ -168,60 +169,57 @@ export default function ExploreTab() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8fafc',
+    backgroundColor: theme.semanticColors.background,
   },
   scrollView: {
     flex: 1,
   },
   content: {
-    padding: 16,
+    padding: theme.spacingPatterns.screen.horizontal,
   },
   title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#222222',
-    marginBottom: 8,
+    ...theme.textStyles.h2,
+    color: theme.semanticColors.text.primary,
+    marginBottom: theme.spacing[2],
     textAlign: 'center',
   },
   subtitle: {
-    fontSize: 16,
-    color: '#717171',
+    ...theme.textStyles.body1,
+    color: theme.semanticColors.text.secondary,
     textAlign: 'center',
-    marginBottom: 24,
+    marginBottom: theme.spacing[6],
   },
   section: {
-    marginBottom: 24,
+    marginBottom: theme.spacing[6],
   },
   sectionTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#222222',
-    marginBottom: 8,
+    ...theme.textStyles.h4,
+    color: theme.semanticColors.text.primary,
+    marginBottom: theme.spacing[2],
   },
   sectionDescription: {
-    fontSize: 14,
-    color: '#717171',
-    marginBottom: 16,
+    ...theme.textStyles.body2,
+    color: theme.semanticColors.text.secondary,
+    marginBottom: theme.spacing[4],
     lineHeight: 20,
   },
   buttonRow: {
     flexDirection: 'row',
-    marginBottom: 12,
+    marginBottom: theme.spacing[3],
     flexWrap: 'wrap',
   },
   buttonSpacing: {
-    marginRight: 12,
-    marginBottom: 8,
+    marginRight: theme.spacing[3],
+    marginBottom: theme.spacing[2],
   },
   cardTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#222222',
-    marginBottom: 8,
+    ...theme.textStyles.h5,
+    color: theme.semanticColors.text.primary,
+    marginBottom: theme.spacing[2],
   },
   cardDescription: {
-    fontSize: 14,
-    color: '#717171',
+    ...theme.textStyles.body2,
+    color: theme.semanticColors.text.secondary,
     lineHeight: 20,
   },
 });
