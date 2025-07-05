@@ -14,7 +14,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { getUserProfile } from '@/lib/api';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
-import { User, Settings, LogOut, Mail, Calendar, Edit3 } from 'lucide-react-native';
+import { User, Settings, LogOut, Mail, Calendar, CreditCard as Edit3 } from 'lucide-react-native';
 
 interface UserProfile {
   id: string;
