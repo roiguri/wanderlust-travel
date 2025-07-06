@@ -35,51 +35,84 @@ import {
   type ErrorState,
 } from '@/store/slices/uiSlice';
 
-// Selectors
+// Selectors with safe defaults
 export const useUISelectors = () => {
   const ui = useAppSelector(state => state.ui);
   
+  // Provide safe defaults for all properties to prevent undefined errors
+  const safeUI = {
+    theme: ui?.theme || 'system',
+    activeTab: ui?.activeTab || 'explore',
+    isOnline: ui?.isOnline ?? true,
+    isConnecting: ui?.isConnecting ?? false,
+    modals: ui?.modals || {},
+    toasts: ui?.toasts || [],
+    loading: ui?.loading || {},
+    errors: ui?.errors || {},
+    searchQuery: ui?.searchQuery || '',
+    recentSearches: ui?.recentSearches || [],
+    isAppReady: ui?.isAppReady ?? false,
+    lastActiveTime: ui?.lastActiveTime || null,
+    preferences: ui?.preferences || {
+      units: 'metric',
+      currency: 'USD',
+      language: 'en',
+      notifications: {
+        push: true,
+        email: true,
+        tripReminders: true,
+        weatherAlerts: true,
+        socialUpdates: false,
+      },
+      privacy: {
+        shareLocation: false,
+        publicProfile: false,
+        shareTrips: false,
+      },
+    },
+  };
+  
   return {
     // Theme
-    theme: ui.theme,
+    theme: safeUI.theme as Theme,
     
     // Navigation
-    activeTab: ui.activeTab,
+    activeTab: safeUI.activeTab as TabName,
     
     // Network
-    isOnline: ui.isOnline,
-    isConnecting: ui.isConnecting,
+    isOnline: safeUI.isOnline,
+    isConnecting: safeUI.isConnecting,
     
     // Modals
-    modals: ui.modals || {},
-    isAnyModalOpen: Object.values(ui.modals || {}).some(isOpen => isOpen),
+    modals: safeUI.modals,
+    isAnyModalOpen: Object.values(safeUI.modals).some(isOpen => isOpen),
     
     // Toasts
-    toasts: ui.toasts || [],
-    hasToasts: (ui.toasts || []).length > 0,
+    toasts: safeUI.toasts,
+    hasToasts: safeUI.toasts.length > 0,
     
     // Loading
-    loading: ui.loading || {},
-    isGlobalLoading: ui.loading.global,
-    isAnyLoading: Object.values(ui.loading || {}).some(isLoading => isLoading),
+    loading: safeUI.loading,
+    isGlobalLoading: safeUI.loading.global || false,
+    isAnyLoading: Object.values(safeUI.loading).some(isLoading => isLoading),
     
     // Errors
-    errors: ui.errors || {},
-    hasErrors: Object.values(ui.errors || {}).some(error => error !== null),
-    globalError: ui.errors.global,
+    errors: safeUI.errors,
+    hasErrors: Object.values(safeUI.errors).some(error => error !== null),
+    globalError: safeUI.errors.global || null,
     
     // Search
-    searchQuery: ui.searchQuery,
-    recentSearches: ui.recentSearches || [],
+    searchQuery: safeUI.searchQuery,
+    recentSearches: safeUI.recentSearches,
     
     // App state
-    isAppReady: ui.isAppReady,
-    lastActiveTime: ui.lastActiveTime,
+    isAppReady: safeUI.isAppReady,
+    lastActiveTime: safeUI.lastActiveTime,
     
     // Preferences
-    preferences: ui.preferences || {},
-    notificationPreferences: ui.preferences.notifications,
-    privacyPreferences: ui.preferences.privacy,
+    preferences: safeUI.preferences,
+    notificationPreferences: safeUI.preferences.notifications,
+    privacyPreferences: safeUI.preferences.privacy,
   };
 };
 
