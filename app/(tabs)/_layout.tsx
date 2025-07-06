@@ -23,11 +23,11 @@ export default function TabLayout() {
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: theme.colors.primary[500],
-        tabBarInactiveTintColor: theme.semanticColors.text.secondary,
+        tabBarInactiveTintColor: theme.text.secondary,
         tabBarStyle: {
-          backgroundColor: theme.semanticColors.surface,
+          backgroundColor: theme.surface,
           borderTopWidth: 1,
-          borderTopColor: theme.semanticColors.border.light,
+          borderTopColor: theme.border.light,
           paddingBottom: theme.spacing[2],
           paddingTop: theme.spacing[2],
           height: 80,

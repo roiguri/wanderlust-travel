@@ -68,40 +68,37 @@ export const colors = {
   transparent: 'transparent',
 } as const;
 
-// Semantic color mappings
-export const semanticColors = {
-  background: colors.gray[50], // #f8fafc equivalent
-  surface: colors.white,
-  
-  text: {
-    primary: colors.gray[900], // #222222 equivalent
-    secondary: colors.gray[500], // #717171 equivalent
-    disabled: colors.gray[400],
-    inverse: colors.white,
+// Flattened semantic color mappings to prevent stack overflow
+export const background = colors.gray[50];
+export const surface = colors.white;
+
+export const text = {
+  primary: colors.gray[900],
+  secondary: colors.gray[500],
+  disabled: colors.gray[400],
+  inverse: colors.white,
+} as const;
+
+export const border = {
+  default: colors.gray[200],
+  light: colors.gray[100],
+  dark: colors.gray[300],
+} as const;
+
+export const button = {
+  primary: {
+    background: colors.primary[500],
+    text: colors.white,
+    border: colors.primary[500],
   },
-  
-  border: {
-    default: colors.gray[200], // #DDDDDD equivalent
-    light: colors.gray[100],
-    dark: colors.gray[300],
+  secondary: {
+    background: colors.white,
+    text: colors.gray[900],
+    border: colors.gray[200],
   },
-  
-  // Button specific colors
-  button: {
-    primary: {
-      background: colors.primary[500],
-      text: colors.white,
-      border: colors.primary[500],
-    },
-    secondary: {
-      background: colors.white,
-      text: colors.gray[900],
-      border: colors.gray[200],
-    },
-    disabled: {
-      background: colors.gray[100], // #F7F7F7 equivalent
-      text: colors.gray[400], // #BBBBBB equivalent
-      border: colors.gray[200],
-    },
+  disabled: {
+    background: colors.gray[100],
+    text: colors.gray[400],
+    border: colors.gray[200],
   },
 } as const;
