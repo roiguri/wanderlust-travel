@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Switch,
 } from 'react-native';
-import { X, Moon, Sun, Globe, Bell, Shield, HelpCircle } from 'lucide-react-native';
+import { X, Moon, Sun, Globe, Bell, Shield, CircleHelp as HelpCircle } from 'lucide-react-native';
 import Modal from '@/components/ui/Modal';
 import { theme } from '@/theme';
 import { useUI } from '@/hooks/useUI';
