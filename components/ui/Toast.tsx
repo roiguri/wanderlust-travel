@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
-import { CheckCircle, XCircle, AlertTriangle, Info, X } from 'lucide-react-native';
+import { CircleCheck as CheckCircle, Circle as XCircle, TriangleAlert as AlertTriangle, Info, X } from 'lucide-react-native';
 import { theme } from '@/theme';
 import { useToasts } from '@/hooks/useUI';
 import type { Toast as ToastType } from '@/store/slices/uiSlice';
