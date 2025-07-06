@@ -1,20 +1,77 @@
 import { Platform } from 'react-native';
 
-// Conditional import and initialization of AsyncStorage
-let AsyncStorage: any;
-
-if (Platform.OS !== 'web' || (typeof window !== 'undefined' && typeof window.localStorage !== 'undefined')) {
-  AsyncStorage = require('@react-native-async-storage/async-storage').default;
-} else {
-  // Mock AsyncStorage for server-side rendering
-  AsyncStorage = {
-    getItem: async () => null,
-    setItem: async () => {},
-    removeItem: async () => {},
-    multiSet: async () => {},
-    multiRemove: async () => {},
-  };
+// Storage interface for consistent API
+interface StorageInterface {
+  getItem: (key: string) => Promise<string | null>;
+  setItem: (key: string, value: string) => Promise<void>;
+  removeItem: (key: string) => Promise<void>;
+  multiSet: (keyValuePairs: [string, string][]) => Promise<void>;
+  multiRemove: (keys: string[]) => Promise<void>;
 }
+
+// Get appropriate storage implementation
+const getStorage = (): StorageInterface => {
+  // For web platform
+  if (Platform.OS === 'web') {
+    // Check if we're in a browser environment
+    if (typeof window !== 'undefined' && window.localStorage) {
+      return {
+        getItem: async (key: string) => {
+          try {
+            return localStorage.getItem(key);
+          } catch {
+            return null;
+          }
+        },
+        setItem: async (key: string, value: string) => {
+          try {
+            localStorage.setItem(key, value);
+          } catch {
+            // Silently fail if localStorage is not available
+          }
+        },
+        removeItem: async (key: string) => {
+          try {
+            localStorage.removeItem(key);
+          } catch {
+            // Silently fail if localStorage is not available
+          }
+        },
+        multiSet: async (keyValuePairs: [string, string][]) => {
+          try {
+            keyValuePairs.forEach(([key, value]) => {
+              localStorage.setItem(key, value);
+            });
+          } catch {
+            // Silently fail if localStorage is not available
+          }
+        },
+        multiRemove: async (keys: string[]) => {
+          try {
+            keys.forEach(key => {
+              localStorage.removeItem(key);
+            });
+          } catch {
+            // Silently fail if localStorage is not available
+          }
+        },
+      };
+    } else {
+      // Server-side rendering or localStorage not available - return mock
+      return {
+        getItem: async () => null,
+        setItem: async () => {},
+        removeItem: async () => {},
+        multiSet: async () => {},
+        multiRemove: async () => {},
+      };
+    }
+  } else {
+    // For React Native platforms, use AsyncStorage
+    const AsyncStorage = require('@react-native-async-storage/async-storage').default;
+    return AsyncStorage;
+  }
+};
 
 const TOKEN_KEY = 'auth_token';
 const REFRESH_TOKEN_KEY = 'refresh_token';
@@ -30,19 +87,10 @@ export interface StoredUser {
   updated_at: string;
 }
 
-// Helper function to check if storage is available
-const isStorageAvailable = (): boolean => {
-  return Platform.OS !== 'web' || (typeof window !== 'undefined' && typeof window.localStorage !== 'undefined');
-};
-
 // Token management
 export const storeTokens = async (token: string, refreshToken: string): Promise<void> => {
-  if (!isStorageAvailable()) {
-    console.warn('Storage not available in current environment');
-    return;
-  }
-  
   try {
+    const AsyncStorage = getStorage();
     await AsyncStorage.multiSet([
       [TOKEN_KEY, token],
       [REFRESH_TOKEN_KEY, refreshToken]
@@ -54,11 +102,8 @@ export const storeTokens = async (token: string, refreshToken: string): Promise<
 };
 
 export const getToken = async (): Promise<string | null> => {
-  if (!isStorageAvailable()) {
-    return null;
-  }
-  
   try {
+    const AsyncStorage = getStorage();
     return await AsyncStorage.getItem(TOKEN_KEY);
   } catch (error) {
     console.error('Error getting token:', error);
@@ -67,11 +112,8 @@ export const getToken = async (): Promise<string | null> => {
 };
 
 export const getRefreshToken = async (): Promise<string | null> => {
-  if (!isStorageAvailable()) {
-    return null;
-  }
-  
   try {
+    const AsyncStorage = getStorage();
     return await AsyncStorage.getItem(REFRESH_TOKEN_KEY);
   } catch (error) {
     console.error('Error getting refresh token:', error);
@@ -80,11 +122,8 @@ export const getRefreshToken = async (): Promise<string | null> => {
 };
 
 export const removeTokens = async (): Promise<void> => {
-  if (!isStorageAvailable()) {
-    return;
-  }
-  
   try {
+    const AsyncStorage = getStorage();
     await AsyncStorage.multiRemove([TOKEN_KEY, REFRESH_TOKEN_KEY]);
   } catch (error) {
     console.error('Error removing tokens:', error);
@@ -93,12 +132,8 @@ export const removeTokens = async (): Promise<void> => {
 
 // User data management
 export const storeUser = async (user: StoredUser): Promise<void> => {
-  if (!isStorageAvailable()) {
-    console.warn('Storage not available in current environment');
-    return;
-  }
-  
   try {
+    const AsyncStorage = getStorage();
     await AsyncStorage.setItem(USER_KEY, JSON.stringify(user));
   } catch (error) {
     console.error('Error storing user data:', error);
@@ -107,11 +142,8 @@ export const storeUser = async (user: StoredUser): Promise<void> => {
 };
 
 export const getUser = async (): Promise<StoredUser | null> => {
-  if (!isStorageAvailable()) {
-    return null;
-  }
-  
   try {
+    const AsyncStorage = getStorage();
     const userData = await AsyncStorage.getItem(USER_KEY);
     return userData ? JSON.parse(userData) : null;
   } catch (error) {
@@ -121,11 +153,8 @@ export const getUser = async (): Promise<StoredUser | null> => {
 };
 
 export const removeUser = async (): Promise<void> => {
-  if (!isStorageAvailable()) {
-    return;
-  }
-  
   try {
+    const AsyncStorage = getStorage();
     await AsyncStorage.removeItem(USER_KEY);
   } catch (error) {
     console.error('Error removing user data:', error);
@@ -134,11 +163,8 @@ export const removeUser = async (): Promise<void> => {
 
 // Clear all auth data
 export const clearAuthData = async (): Promise<void> => {
-  if (!isStorageAvailable()) {
-    return;
-  }
-  
   try {
+    const AsyncStorage = getStorage();
     await AsyncStorage.multiRemove([TOKEN_KEY, REFRESH_TOKEN_KEY, USER_KEY]);
   } catch (error) {
     console.error('Error clearing auth data:', error);
@@ -147,10 +173,6 @@ export const clearAuthData = async (): Promise<void> => {
 
 // Check if user is authenticated
 export const isAuthenticated = async (): Promise<boolean> => {
-  if (!isStorageAvailable()) {
-    return false;
-  }
-  
   try {
     const token = await getToken();
     const user = await getUser();

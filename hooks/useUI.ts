@@ -51,33 +51,33 @@ export const useUISelectors = () => {
     isConnecting: ui.isConnecting,
     
     // Modals
-    modals: ui.modals,
-    isAnyModalOpen: Object.values(ui.modals).some(isOpen => isOpen),
+    modals: ui.modals || {},
+    isAnyModalOpen: Object.values(ui.modals || {}).some(isOpen => isOpen),
     
     // Toasts
-    toasts: ui.toasts,
-    hasToasts: ui.toasts.length > 0,
+    toasts: ui.toasts || [],
+    hasToasts: (ui.toasts || []).length > 0,
     
     // Loading
-    loading: ui.loading,
+    loading: ui.loading || {},
     isGlobalLoading: ui.loading.global,
-    isAnyLoading: Object.values(ui.loading).some(isLoading => isLoading),
+    isAnyLoading: Object.values(ui.loading || {}).some(isLoading => isLoading),
     
     // Errors
-    errors: ui.errors,
-    hasErrors: Object.values(ui.errors).some(error => error !== null),
+    errors: ui.errors || {},
+    hasErrors: Object.values(ui.errors || {}).some(error => error !== null),
     globalError: ui.errors.global,
     
     // Search
     searchQuery: ui.searchQuery,
-    recentSearches: ui.recentSearches,
+    recentSearches: ui.recentSearches || [],
     
     // App state
     isAppReady: ui.isAppReady,
     lastActiveTime: ui.lastActiveTime,
     
     // Preferences
-    preferences: ui.preferences,
+    preferences: ui.preferences || {},
     notificationPreferences: ui.preferences.notifications,
     privacyPreferences: ui.preferences.privacy,
   };
