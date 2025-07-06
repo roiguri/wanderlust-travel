@@ -1,4 +1,20 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Platform } from 'react-native';
+
+// Conditional import and initialization of AsyncStorage
+let AsyncStorage: any;
+
+if (Platform.OS !== 'web' || (typeof window !== 'undefined' && typeof window.localStorage !== 'undefined')) {
+  AsyncStorage = require('@react-native-async-storage/async-storage').default;
+} else {
+  // Mock AsyncStorage for server-side rendering
+  AsyncStorage = {
+    getItem: async () => null,
+    setItem: async () => {},
+    removeItem: async () => {},
+    multiSet: async () => {},
+    multiRemove: async () => {},
+  };
+}
 
 const TOKEN_KEY = 'auth_token';
 const REFRESH_TOKEN_KEY = 'refresh_token';
@@ -14,8 +30,18 @@ export interface StoredUser {
   updated_at: string;
 }
 
+// Helper function to check if storage is available
+const isStorageAvailable = (): boolean => {
+  return Platform.OS !== 'web' || (typeof window !== 'undefined' && typeof window.localStorage !== 'undefined');
+};
+
 // Token management
 export const storeTokens = async (token: string, refreshToken: string): Promise<void> => {
+  if (!isStorageAvailable()) {
+    console.warn('Storage not available in current environment');
+    return;
+  }
+  
   try {
     await AsyncStorage.multiSet([
       [TOKEN_KEY, token],
@@ -28,6 +54,10 @@ export const storeTokens = async (token: string, refreshToken: string): Promise<
 };
 
 export const getToken = async (): Promise<string | null> => {
+  if (!isStorageAvailable()) {
+    return null;
+  }
+  
   try {
     return await AsyncStorage.getItem(TOKEN_KEY);
   } catch (error) {
@@ -37,6 +67,10 @@ export const getToken = async (): Promise<string | null> => {
 };
 
 export const getRefreshToken = async (): Promise<string | null> => {
+  if (!isStorageAvailable()) {
+    return null;
+  }
+  
   try {
     return await AsyncStorage.getItem(REFRESH_TOKEN_KEY);
   } catch (error) {
@@ -46,6 +80,10 @@ export const getRefreshToken = async (): Promise<string | null> => {
 };
 
 export const removeTokens = async (): Promise<void> => {
+  if (!isStorageAvailable()) {
+    return;
+  }
+  
   try {
     await AsyncStorage.multiRemove([TOKEN_KEY, REFRESH_TOKEN_KEY]);
   } catch (error) {
@@ -55,6 +93,11 @@ export const removeTokens = async (): Promise<void> => {
 
 // User data management
 export const storeUser = async (user: StoredUser): Promise<void> => {
+  if (!isStorageAvailable()) {
+    console.warn('Storage not available in current environment');
+    return;
+  }
+  
   try {
     await AsyncStorage.setItem(USER_KEY, JSON.stringify(user));
   } catch (error) {
@@ -64,6 +107,10 @@ export const storeUser = async (user: StoredUser): Promise<void> => {
 };
 
 export const getUser = async (): Promise<StoredUser | null> => {
+  if (!isStorageAvailable()) {
+    return null;
+  }
+  
   try {
     const userData = await AsyncStorage.getItem(USER_KEY);
     return userData ? JSON.parse(userData) : null;
@@ -74,6 +121,10 @@ export const getUser = async (): Promise<StoredUser | null> => {
 };
 
 export const removeUser = async (): Promise<void> => {
+  if (!isStorageAvailable()) {
+    return;
+  }
+  
   try {
     await AsyncStorage.removeItem(USER_KEY);
   } catch (error) {
@@ -83,6 +134,10 @@ export const removeUser = async (): Promise<void> => {
 
 // Clear all auth data
 export const clearAuthData = async (): Promise<void> => {
+  if (!isStorageAvailable()) {
+    return;
+  }
+  
   try {
     await AsyncStorage.multiRemove([TOKEN_KEY, REFRESH_TOKEN_KEY, USER_KEY]);
   } catch (error) {
@@ -92,6 +147,10 @@ export const clearAuthData = async (): Promise<void> => {
 
 // Check if user is authenticated
 export const isAuthenticated = async (): Promise<boolean> => {
+  if (!isStorageAvailable()) {
+    return false;
+  }
+  
   try {
     const token = await getToken();
     const user = await getUser();
