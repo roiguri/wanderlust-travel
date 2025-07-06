@@ -1,7 +1,7 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
+import { Platform } from 'react-native';
 
 // Import slices (we'll create these next)
 import authSlice from './slices/authSlice';
@@ -10,6 +10,51 @@ import uiSlice from './slices/uiSlice';
 
 // Import API slices
 import { baseApi } from './api/baseApi';
+
+// Get appropriate storage for redux-persist
+const getReduxPersistStorage = () => {
+  if (Platform.OS === 'web') {
+    // Use localStorage for web
+    if (typeof window !== 'undefined' && typeof window.localStorage !== 'undefined') {
+      return {
+        getItem: (key: string) => {
+          try {
+            return Promise.resolve(window.localStorage.getItem(key));
+          } catch {
+            return Promise.resolve(null);
+          }
+        },
+        setItem: (key: string, value: string) => {
+          try {
+            window.localStorage.setItem(key, value);
+            return Promise.resolve();
+          } catch {
+            return Promise.resolve();
+          }
+        },
+        removeItem: (key: string) => {
+          try {
+            window.localStorage.removeItem(key);
+            return Promise.resolve();
+          } catch {
+            return Promise.resolve();
+          }
+        },
+      };
+    } else {
+      // Mock storage for SSR
+      return {
+        getItem: () => Promise.resolve(null),
+        setItem: () => Promise.resolve(),
+        removeItem: () => Promise.resolve(),
+      };
+    }
+  } else {
+    // Use AsyncStorage for React Native
+    const AsyncStorage = require('@react-native-async-storage/async-storage').default;
+    return AsyncStorage;
+  }
+};
 
 // Root reducer
 const rootReducer = combineReducers({
@@ -24,7 +69,7 @@ const rootReducer = combineReducers({
 const persistConfig = {
   key: 'root',
   version: 1,
-  storage: AsyncStorage,
+  storage: getReduxPersistStorage(),
   // Only persist certain slices
   whitelist: ['auth', 'ui'],
   // Don't persist API cache and trips (they'll be fetched fresh)
