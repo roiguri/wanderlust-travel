@@ -6,6 +6,8 @@ import {
   Animated,
   TouchableOpacity,
   Dimensions,
+  PanGestureHandler,
+  State,
 } from 'react-native';
 import { CircleCheck as CheckCircle, Circle as XCircle, TriangleAlert as AlertTriangle, Info, X } from 'lucide-react-native';
 import { theme } from '@/theme';
@@ -21,19 +23,28 @@ interface ToastProps {
 const Toast: React.FC<ToastProps> = ({ toast }) => {
   const { removeToast } = useToasts();
   const translateY = new Animated.Value(-100);
+  const translateX = new Animated.Value(0);
   const opacity = new Animated.Value(0);
+  const scale = new Animated.Value(0.9);
 
   useEffect(() => {
-    // Animate in
+    // Animate in with slide down and scale up
     Animated.parallel([
-      Animated.timing(translateY, {
+      Animated.spring(translateY, {
         toValue: 0,
-        duration: 300,
+        tension: 100,
+        friction: 8,
         useNativeDriver: true,
       }),
       Animated.timing(opacity, {
         toValue: 1,
         duration: 300,
+        useNativeDriver: true,
+      }),
+      Animated.spring(scale, {
+        toValue: 1,
+        tension: 100,
+        friction: 8,
         useNativeDriver: true,
       }),
     ]).start();
@@ -48,21 +59,65 @@ const Toast: React.FC<ToastProps> = ({ toast }) => {
     }
   }, []);
 
-  const handleDismiss = () => {
-    Animated.parallel([
-      Animated.timing(translateY, {
-        toValue: -100,
-        duration: 250,
-        useNativeDriver: true,
-      }),
+  const handleDismiss = (direction: 'up' | 'right' = 'up') => {
+    const animations = [
       Animated.timing(opacity, {
         toValue: 0,
         duration: 250,
         useNativeDriver: true,
       }),
-    ]).start(() => {
+      Animated.timing(scale, {
+        toValue: 0.9,
+        duration: 250,
+        useNativeDriver: true,
+      }),
+    ];
+
+    if (direction === 'up') {
+      animations.push(
+        Animated.timing(translateY, {
+          toValue: -100,
+          duration: 250,
+          useNativeDriver: true,
+        })
+      );
+    } else {
+      animations.push(
+        Animated.timing(translateX, {
+          toValue: screenWidth + 50,
+          duration: 250,
+          useNativeDriver: true,
+        })
+      );
+    }
+
+    Animated.parallel(animations).start(() => {
       removeToast(toast.id);
     });
+  };
+
+  const onGestureEvent = Animated.event(
+    [{ nativeEvent: { translationX: translateX } }],
+    { useNativeDriver: true }
+  );
+
+  const onHandlerStateChange = (event: any) => {
+    if (event.nativeEvent.state === State.END) {
+      const { translationX, velocityX } = event.nativeEvent;
+      
+      // If swiped far enough or fast enough, dismiss
+      if (Math.abs(translationX) > screenWidth * 0.3 || Math.abs(velocityX) > 500) {
+        handleDismiss('right');
+      } else {
+        // Spring back to original position
+        Animated.spring(translateX, {
+          toValue: 0,
+          tension: 100,
+          friction: 8,
+          useNativeDriver: true,
+        }).start();
+      }
+    }
   };
 
   const getIcon = () => {
@@ -143,41 +198,54 @@ const Toast: React.FC<ToastProps> = ({ toast }) => {
   };
 
   return (
-    <Animated.View
-      style={[
-        styles.container,
-        {
-          backgroundColor: getBackgroundColor(),
-          transform: [{ translateY }],
-          opacity,
-        },
-      ]}
+    <PanGestureHandler
+      onGestureEvent={onGestureEvent}
+      onHandlerStateChange={onHandlerStateChange}
+      activeOffsetX={[-10, 10]}
     >
-      <View style={styles.content}>
-        <View style={styles.iconContainer}>
-          {getIcon()}
-        </View>
-        
-        <View style={styles.textContainer}>
-          <Text style={[styles.title, { color: getTextColor() }]}>
-            {toast.title}
-          </Text>
-          {toast.message && (
-            <Text style={[styles.message, { color: getTextColor() }]}>
-              {toast.message}
+      <Animated.View
+        style={[
+          styles.container,
+          {
+            backgroundColor: getBackgroundColor(),
+            transform: [
+              { translateY },
+              { translateX },
+              { scale },
+            ],
+            opacity,
+          },
+        ]}
+      >
+        <View style={styles.content}>
+          <View style={styles.iconContainer}>
+            {getIcon()}
+          </View>
+          
+          <View style={styles.textContainer}>
+            <Text style={[styles.title, { color: getTextColor() }]}>
+              {toast.title}
             </Text>
-          )}
+            {toast.message && (
+              <Text style={[styles.message, { color: getTextColor() }]}>
+                {toast.message}
+              </Text>
+            )}
+          </View>
+          
+          <TouchableOpacity
+            style={styles.closeButton}
+            onPress={() => handleDismiss('up')}
+            activeOpacity={0.7}
+          >
+            <X size={16} color={getCloseButtonColor()} />
+          </TouchableOpacity>
         </View>
         
-        <TouchableOpacity
-          style={styles.closeButton}
-          onPress={handleDismiss}
-          activeOpacity={0.7}
-        >
-          <X size={16} color={getCloseButtonColor()} />
-        </TouchableOpacity>
-      </View>
-    </Animated.View>
+        {/* Swipe indicator */}
+        <View style={styles.swipeIndicator} />
+      </Animated.View>
+    </PanGestureHandler>
   );
 };
 
@@ -188,8 +256,10 @@ export const ToastContainer: React.FC<ToastContainerProps> = () => {
 
   return (
     <View style={styles.toastContainer} pointerEvents="box-none">
-      {toasts.map((toast) => (
-        <Toast key={toast.id} toast={toast} />
+      {toasts.map((toast, index) => (
+        <View key={toast.id} style={[styles.toastWrapper, { zIndex: 1000 - index }]}>
+          <Toast toast={toast} />
+        </View>
       ))}
     </View>
   );
@@ -204,10 +274,13 @@ const styles = StyleSheet.create({
     zIndex: 9999,
     paddingHorizontal: theme.spacing[4],
   },
+  toastWrapper: {
+    marginBottom: theme.spacing[2],
+  },
   container: {
     borderRadius: theme.componentRadius.card,
-    marginBottom: theme.spacing[2],
     ...theme.componentShadows.card,
+    overflow: 'hidden',
   },
   content: {
     flexDirection: 'row',
@@ -236,6 +309,16 @@ const styles = StyleSheet.create({
     padding: theme.spacing[1],
     marginLeft: theme.spacing[2],
     borderRadius: theme.borderRadius.sm,
+  },
+  swipeIndicator: {
+    position: 'absolute',
+    bottom: 0,
+    left: '50%',
+    marginLeft: -12,
+    width: 24,
+    height: 3,
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    borderRadius: 2,
   },
 });
 
