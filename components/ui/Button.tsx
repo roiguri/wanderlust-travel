@@ -128,12 +128,12 @@ const styles = StyleSheet.create({
     borderColor: theme.border.default,
   },
   outline: {
-    backgroundColor: 'transparent',
-    borderColor: theme.colors.primary[500],
+    backgroundColor: theme.colors.primary[50],
+    borderColor: theme.colors.primary[300],
   },
   ghost: {
-    backgroundColor: 'transparent',
-    borderColor: 'transparent',
+    backgroundColor: theme.colors.gray[50],
+    borderColor: theme.colors.gray[200],
   },
   danger: {
     backgroundColor: theme.colors.error,
@@ -179,10 +179,10 @@ const styles = StyleSheet.create({
     color: theme.text.primary,
   },
   outlineText: {
-    color: theme.colors.primary[500],
+    color: theme.colors.primary[600],
   },
   ghostText: {
-    color: theme.colors.primary[500],
+    color: theme.colors.gray[700],
   },
   dangerText: {
     color: theme.text.inverse,
