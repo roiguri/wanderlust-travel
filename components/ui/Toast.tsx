@@ -100,30 +100,30 @@ const Toast: React.FC<ToastProps> = ({ toast }) => {
   const getBackgroundColor = () => {
     switch (toast.type) {
       case 'success':
-        return theme.colors.success + '10';
+        return theme.colors.success + '20';
       case 'error':
-        return theme.colors.error + '10';
+        return theme.colors.error + '20';
       case 'warning':
-        return theme.colors.warning + '10';
+        return theme.colors.warning + '20';
       case 'info':
-        return theme.colors.info + '10';
+        return theme.colors.info + '20';
       default:
-        return theme.colors.info + '10';
+        return theme.colors.info + '20';
     }
   };
 
   const getBorderColor = () => {
     switch (toast.type) {
       case 'success':
-        return theme.colors.success + '30';
+        return theme.colors.success + '50';
       case 'error':
-        return theme.colors.error + '30';
+        return theme.colors.error + '50';
       case 'warning':
-        return theme.colors.warning + '30';
+        return theme.colors.warning + '50';
       case 'info':
-        return theme.colors.info + '30';
+        return theme.colors.info + '50';
       default:
-        return theme.colors.info + '30';
+        return theme.colors.info + '50';
     }
   };
 
