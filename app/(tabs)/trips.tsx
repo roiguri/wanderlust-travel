@@ -9,17 +9,7 @@ import {
   Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { 
-  Plus, 
-  Search, 
-  Filter, 
-  MoreVertical,
-  MapPin,
-  Calendar,
-  TrendingUp,
-  CheckSquare,
-  Square,
-} from 'lucide-react-native';
+import { Plus, Search, Filter, MoveVertical as MoreVertical, MapPin, Calendar, TrendingUp, SquareCheck as CheckSquare, Square } from 'lucide-react-native';
 import { theme } from '@/theme';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { 
