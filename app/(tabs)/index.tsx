@@ -48,7 +48,7 @@ export default function ExploreTab() {
     setTimeout(() => {
       closeSettings();
       showInfoToast('Modal Test', 'Modal was opened and closed automatically.');
-    }, 20000000);
+    }, 2000);
   };
 
   return (
