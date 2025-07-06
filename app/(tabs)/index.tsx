@@ -14,7 +14,7 @@ export default function ExploreTab() {
   
   const { showSuccessToast, showErrorToast, showWarningToast, showInfoToast } = useToasts();
   const { setGlobalLoading } = useLoading();
-  const { openModal, closeModal } = useModals();
+  const { openSettings, closeSettings } = useModals();
 
   const handlePrimaryAction = () => {
     showSuccessToast('Success!', 'Primary button was pressed successfully.');
@@ -44,9 +44,9 @@ export default function ExploreTab() {
   };
   
   const handleTestModal = () => {
-    openModal('settings');
+    openSettings();
     setTimeout(() => {
-      closeModal('settings');
+      closeSettings();
       showInfoToast('Modal Test', 'Modal was opened and closed automatically.');
     }, 2000);
   };
