@@ -16,7 +16,7 @@ export default function MapTab() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.semanticColors.background,
+    backgroundColor: theme.background,
   },
   content: {
     flex: 1,
@@ -25,14 +25,14 @@ const styles = StyleSheet.create({
     padding: theme.spacingPatterns.screen.horizontal,
   },
   title: {
-    ...theme.textStyles.h1,
-    color: theme.semanticColors.text.primary,
+    ...theme.h1,
+    color: theme.text.primary,
     marginBottom: theme.spacing[2],
     includeFontPadding: false,
   },
   subtitle: {
-    ...theme.textStyles.body1,
-    color: theme.semanticColors.text.secondary,
+    ...theme.body1,
+    color: theme.text.secondary,
     textAlign: 'center',
     includeFontPadding: false,
   },

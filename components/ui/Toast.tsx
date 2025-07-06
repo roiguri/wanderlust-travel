@@ -48,7 +48,7 @@ export const Toast: React.FC<ToastProps> = ({ toast }) => {
   };
 
   const getIcon = () => {
-    const iconProps = { size: 20, color: theme.semanticColors.text.inverse };
+    const iconProps = { size: 20, color: theme.text.inverse };
     
     switch (toast.type) {
       case 'success':
@@ -103,7 +103,7 @@ export const Toast: React.FC<ToastProps> = ({ toast }) => {
           onPress={handleDismiss}
           activeOpacity={0.7}
         >
-          <X size={18} color={theme.semanticColors.text.inverse} />
+          <X size={18} color={theme.text.inverse} />
         </TouchableOpacity>
       </View>
     </Animated.View>
@@ -154,15 +154,15 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    ...theme.textStyles.body1,
-    color: theme.semanticColors.text.inverse,
+    ...theme.body1,
+    color: theme.text.inverse,
     fontWeight: theme.typography.fontWeights.semibold,
     marginBottom: theme.spacing[1],
     includeFontPadding: false,
   },
   message: {
-    ...theme.textStyles.body2,
-    color: theme.semanticColors.text.inverse,
+    ...theme.body2,
+    color: theme.text.inverse,
     opacity: 0.9,
     includeFontPadding: false,
   },

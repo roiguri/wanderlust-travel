@@ -240,7 +240,7 @@ export default function ExploreTab() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.semanticColors.background,
+    backgroundColor: theme.background,
   },
   scrollView: {
     flex: 1,
@@ -249,15 +249,15 @@ const styles = StyleSheet.create({
     padding: theme.spacingPatterns.screen.horizontal,
   },
   title: {
-    ...theme.textStyles.h2,
-    color: theme.semanticColors.text.primary,
+    ...theme.h2,
+    color: theme.text.primary,
     marginBottom: theme.spacing[2],
     textAlign: 'center',
     includeFontPadding: false,
   },
   subtitle: {
-    ...theme.textStyles.body1,
-    color: theme.semanticColors.text.secondary,
+    ...theme.body1,
+    color: theme.text.secondary,
     textAlign: 'center',
     marginBottom: theme.spacing[6],
     includeFontPadding: false,
@@ -266,14 +266,14 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing[6],
   },
   sectionTitle: {
-    ...theme.textStyles.h4,
-    color: theme.semanticColors.text.primary,
+    ...theme.h4,
+    color: theme.text.primary,
     marginBottom: theme.spacing[2],
     includeFontPadding: false,
   },
   sectionDescription: {
-    ...theme.textStyles.body2,
-    color: theme.semanticColors.text.secondary,
+    ...theme.body2,
+    color: theme.text.secondary,
     marginBottom: theme.spacing[4],
     includeFontPadding: false,
   },
@@ -287,14 +287,14 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing[2],
   },
   cardTitle: {
-    ...theme.textStyles.h5,
-    color: theme.semanticColors.text.primary,
+    ...theme.h5,
+    color: theme.text.primary,
     marginBottom: theme.spacing[2],
     includeFontPadding: false,
   },
   cardDescription: {
-    ...theme.textStyles.body2,
-    color: theme.semanticColors.text.secondary,
+    ...theme.body2,
+    color: theme.text.secondary,
     includeFontPadding: false,
   },
 });

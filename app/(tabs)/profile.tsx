@@ -240,7 +240,7 @@ export default function ProfileTab() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.semanticColors.background,
+    backgroundColor: theme.background,
   },
   scrollView: {
     flex: 1,
@@ -255,8 +255,8 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     marginTop: theme.spacing[4],
-    ...theme.textStyles.body1,
-    color: theme.semanticColors.text.secondary,
+    ...theme.body1,
+    color: theme.text.secondary,
     includeFontPadding: false,
   },
   errorContainer: {
@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
     padding: theme.spacing[5],
   },
   errorText: {
-    ...theme.textStyles.body1,
+    ...theme.body1,
     color: theme.colors.error,
     textAlign: 'center',
     marginBottom: theme.spacing[5],
@@ -282,8 +282,8 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing[6],
   },
   title: {
-    ...theme.textStyles.h1,
-    color: theme.semanticColors.text.primary,
+    ...theme.h1,
+    color: theme.text.primary,
     includeFontPadding: false,
   },
   settingsButton: {
@@ -324,14 +324,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: theme.semanticColors.surface,
+    borderColor: theme.surface,
   },
   profileInfo: {
     flex: 1,
   },
   username: {
-    ...theme.textStyles.h3,
-    color: theme.semanticColors.text.primary,
+    ...theme.h3,
+    color: theme.text.primary,
     marginBottom: theme.spacing[2],
     includeFontPadding: false,
   },
@@ -340,8 +340,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   email: {
-    ...theme.textStyles.body1,
-    color: theme.semanticColors.text.secondary,
+    ...theme.body1,
+    color: theme.text.secondary,
     marginLeft: theme.spacing[2],
     includeFontPadding: false,
   },
@@ -349,8 +349,8 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing[6],
   },
   sectionTitle: {
-    ...theme.textStyles.h4,
-    color: theme.semanticColors.text.primary,
+    ...theme.h4,
+    color: theme.text.primary,
     marginBottom: theme.spacing[4],
     includeFontPadding: false,
   },
@@ -368,14 +368,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   infoLabelText: {
-    ...theme.textStyles.body1,
-    color: theme.semanticColors.text.secondary,
+    ...theme.body1,
+    color: theme.text.secondary,
     marginLeft: theme.spacing[3],
     includeFontPadding: false,
   },
   infoValue: {
-    ...theme.textStyles.body1,
-    color: theme.semanticColors.text.primary,
+    ...theme.body1,
+    color: theme.text.primary,
     fontWeight: theme.typography.fontWeights.medium,
     textAlign: 'right',
     flex: 1,
@@ -389,7 +389,7 @@ const styles = StyleSheet.create({
   },
   errorCardText: {
     color: theme.colors.error,
-    ...theme.textStyles.body2,
+    ...theme.body2,
     marginBottom: theme.spacing[3],
     includeFontPadding: false,
   },

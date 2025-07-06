@@ -55,7 +55,7 @@ export default function Button({
     >
       {loading ? (
         <ActivityIndicator
-          color={variant === 'primary' ? theme.semanticColors.button.primary.text : theme.semanticColors.button.primary.background}
+          color={variant === 'primary' ? theme.button.primary.text : theme.button.primary.background}
           size="small"
         />
       ) : (
@@ -74,16 +74,16 @@ const styles = StyleSheet.create({
     ...theme.componentShadows.button,
   },
   primary: {
-    backgroundColor: theme.semanticColors.button.primary.background,
-    borderColor: theme.semanticColors.button.primary.border,
+    backgroundColor: theme.button.primary.background,
+    borderColor: theme.button.primary.border,
   },
   secondary: {
-    backgroundColor: theme.semanticColors.button.secondary.background,
-    borderColor: theme.semanticColors.button.secondary.border,
+    backgroundColor: theme.button.secondary.background,
+    borderColor: theme.button.secondary.border,
   },
   disabled: {
-    backgroundColor: theme.semanticColors.button.disabled.background,
-    borderColor: theme.semanticColors.button.disabled.border,
+    backgroundColor: theme.button.disabled.background,
+    borderColor: theme.button.disabled.border,
     ...theme.shadows.none,
   },
   small: {
@@ -102,19 +102,19 @@ const styles = StyleSheet.create({
     minHeight: theme.sizes.button.large.height,
   },
   baseText: {
-    ...theme.textStyles.button,
+    ...theme.buttonText,
     textAlign: 'center',
     includeFontPadding: false,
     textAlignVertical: 'center',
   },
   primaryText: {
-    color: theme.semanticColors.button.primary.text,
+    color: theme.button.primary.text,
   },
   secondaryText: {
-    color: theme.semanticColors.button.secondary.text,
+    color: theme.button.secondary.text,
   },
   disabledText: {
-    color: theme.semanticColors.button.disabled.text,
+    color: theme.button.disabled.text,
   },
   smallText: {
     fontSize: theme.typography.fontSizes.sm,

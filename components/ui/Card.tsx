@@ -47,7 +47,7 @@ export default function Card({
 
 const styles = StyleSheet.create({
   base: {
-    backgroundColor: theme.semanticColors.surface,
+    backgroundColor: theme.surface,
     borderRadius: theme.componentRadius.card,
     padding: theme.spacing[4],
   },
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
   },
   outlined: {
     borderWidth: 1,
-    borderColor: theme.semanticColors.border.default,
+    borderColor: theme.border.default,
     ...theme.shadows.xs,
   },
 });
