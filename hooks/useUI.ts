@@ -26,7 +26,15 @@ export const useUI = () => {
 
   return {
     // State
-    ...ui,
+    theme: ui.theme,
+    activeTab: ui.activeTab,
+    isOnline: ui.isOnline,
+    modals: ui.modals,
+    toasts: ui.toasts,
+    loading: ui.loading,
+    searchQuery: ui.searchQuery,
+    recentSearches: ui.recentSearches,
+    isAppReady: ui.isAppReady,
     
     // Theme actions
     setTheme: (theme: Theme) => dispatch(setTheme(theme)),
@@ -109,14 +117,6 @@ export const useToasts = () => {
     });
   };
 
-  const removeToast = (id: string) => {
-    dispatch(removeToast(id));
-  };
-
-  const clearAllToasts = () => {
-    dispatch(clearToasts());
-  };
-
   return {
     toasts,
     showToast,
@@ -124,76 +124,43 @@ export const useToasts = () => {
     showErrorToast,
     showWarningToast,
     showInfoToast,
-    removeToast,
-    clearAllToasts,
+    removeToast: (id: string) => dispatch(removeToast(id)),
+    clearAllToasts: () => dispatch(clearToasts()),
   };
 };
 
 export const useModals = () => {
   const dispatch = useAppDispatch();
-  const modals = useAppSelector((state) => state.ui.modals);
-
-  const openModal = (modal: 'settings') => {
-    dispatch(openModal(modal));
-  };
-
-  const closeModal = (modal: 'settings') => {
-    dispatch(closeModal(modal));
-  };
-
-  const closeAllModals = () => {
-    dispatch(closeAllModals());
-  };
-
-  const isModalOpen = (modal: 'settings') => {
-    return modals[modal];
-  };
+  const settingsModalOpen = useAppSelector((state) => state.ui.modals.settings);
 
   return {
-    modals,
-    openModal,
-    closeModal,
-    closeAllModals,
-    isModalOpen,
+    isSettingsOpen: settingsModalOpen,
+    openSettings: () => dispatch(openModal('settings')),
+    closeSettings: () => dispatch(closeModal('settings')),
+    closeAllModals: () => dispatch(closeAllModals()),
   };
 };
 
 export const useLoading = () => {
   const dispatch = useAppDispatch();
-  const loading = useAppSelector((state) => state.ui.loading);
-
-  const setGlobalLoading = (isLoading: boolean) => {
-    dispatch(setGlobalLoading(isLoading));
-  };
+  const globalLoading = useAppSelector((state) => state.ui.loading.global);
 
   return {
-    loading,
-    setGlobalLoading,
-    isLoading: loading.global,
+    isLoading: globalLoading,
+    setGlobalLoading: (isLoading: boolean) => dispatch(setGlobalLoading(isLoading)),
   };
 };
 
 export const useSearch = () => {
   const dispatch = useAppDispatch();
-  const { searchQuery, recentSearches } = useAppSelector((state) => state.ui);
-
-  const setSearchQuery = (query: string) => {
-    dispatch(setSearchQuery(query));
-  };
-
-  const addRecentSearch = (query: string) => {
-    dispatch(addRecentSearch(query));
-  };
-
-  const clearRecentSearches = () => {
-    dispatch(clearRecentSearches());
-  };
+  const searchQuery = useAppSelector((state) => state.ui.searchQuery);
+  const recentSearches = useAppSelector((state) => state.ui.recentSearches);
 
   return {
     searchQuery,
     recentSearches,
-    setSearchQuery,
-    addRecentSearch,
-    clearRecentSearches,
+    setSearchQuery: (query: string) => dispatch(setSearchQuery(query)),
+    addRecentSearch: (query: string) => dispatch(addRecentSearch(query)),
+    clearRecentSearches: () => dispatch(clearRecentSearches()),
   };
 };
