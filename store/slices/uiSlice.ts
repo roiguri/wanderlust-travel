@@ -190,6 +190,11 @@ const uiSlice = createSlice({
 
     // Toast actions
     addToast: (state, action: PayloadAction<Omit<Toast, 'id' | 'timestamp'>>) => {
+      // Ensure toasts array exists
+      if (!Array.isArray(state.toasts)) {
+        state.toasts = [];
+      }
+      
       const toast: Toast = {
         ...action.payload,
         id: `toast_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
@@ -247,6 +252,12 @@ const uiSlice = createSlice({
 
     addRecentSearch: (state, action: PayloadAction<string>) => {
       const query = action.payload.trim();
+      
+      // Ensure recentSearches array exists
+      if (!Array.isArray(state.recentSearches)) {
+        state.recentSearches = [];
+      }
+      
       if (query && !state.recentSearches.includes(query)) {
         state.recentSearches.unshift(query);
         // Keep only last 10 searches

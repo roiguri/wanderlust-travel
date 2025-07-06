@@ -155,6 +155,12 @@ const tripsSlice = createSlice({
       })
       .addCase(createTripAsync.fulfilled, (state, action) => {
         state.isLoading = false;
+        
+        // Ensure trips array exists
+        if (!Array.isArray(state.trips)) {
+          state.trips = [];
+        }
+        
         state.trips.unshift(action.payload);
         state.error = null;
       })
