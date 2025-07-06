@@ -7,15 +7,7 @@ import {
   Image,
   Pressable,
 } from 'react-native';
-import { 
-  MapPin, 
-  Calendar, 
-  DollarSign, 
-  Users, 
-  MoreVertical,
-  Clock,
-  Star,
-} from 'lucide-react-native';
+import { MapPin, Calendar, DollarSign, Users, MoveVertical as MoreVertical, Clock, Star } from 'lucide-react-native';
 import { theme } from '@/theme';
 import type { Trip } from '@/store/slices/tripsSlice';
 
