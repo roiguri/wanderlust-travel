@@ -118,9 +118,9 @@ export default function LoginScreen() {
                   activeOpacity={0.7}
                 >
                   {showPassword ? (
-                    <EyeOff size={20} color={theme.semanticColors.text.secondary} />
+                    <EyeOff size={20} color={theme.text.secondary} />
                   ) : (
-                    <Eye size={20} color={theme.semanticColors.text.secondary} />
+                    <Eye size={20} color={theme.text.secondary} />
                   )}
                 </TouchableOpacity>
               </View>

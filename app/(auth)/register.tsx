@@ -164,9 +164,9 @@ export default function RegisterScreen() {
                   activeOpacity={0.7}
                 >
                   {showPassword ? (
-                    <EyeOff size={20} color={theme.semanticColors.text.secondary} />
+                    <EyeOff size={20} color={theme.text.secondary} />
                   ) : (
-                    <Eye size={20} color={theme.semanticColors.text.secondary} />
+                    <Eye size={20} color={theme.text.secondary} />
                   )}
                 </TouchableOpacity>
               </View>
@@ -210,9 +210,9 @@ export default function RegisterScreen() {
                   activeOpacity={0.7}
                 >
                   {showConfirmPassword ? (
-                    <EyeOff size={20} color={theme.semanticColors.text.secondary} />
+                    <EyeOff size={20} color={theme.text.secondary} />
                   ) : (
-                    <Eye size={20} color={theme.semanticColors.text.secondary} />
+                    <Eye size={20} color={theme.text.secondary} />
                   )}
                 </TouchableOpacity>
               </View>
