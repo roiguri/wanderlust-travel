@@ -11,50 +11,57 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '@/contexts/AuthContext';
-import { getUserProfile } from '@/lib/api';
+import { useAppSelector, useAppDispatch } from '@/store/hooks';
+import { fetchUserProfileAsync, logoutAsync } from '@/store/slices/authSlice';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
-import { User, Settings, LogOut, Mail, Calendar, CreditCard as Edit3 } from 'lucide-react-native';
+import EditProfileModal from '@/components/modals/EditProfileModal';
+import SettingsModal from '@/components/modals/SettingsModal';
+import { 
+  User, 
+  Settings, 
+  LogOut, 
+  Mail, 
+  Calendar, 
+  Edit3,
+  MapPin,
+  Camera,
+  Award,
+  TrendingUp
+} from 'lucide-react-native';
 import { theme } from '@/theme';
-
-interface UserProfile {
-  id: string;
-  email: string;
-  username: string;
-  profile_picture_url?: string;
-  preferences: Record<string, any>;
-  created_at: string;
-  updated_at: string;
-}
+import { useToasts } from '@/hooks/useUI';
 
 export default function ProfileTab() {
-  const { user: contextUser, logout } = useAuth();
-  const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  // Use both Redux and AuthContext for migration period
+  const { logout: authLogout } = useAuth();
+  const dispatch = useAppDispatch();
+  
+  // Redux state
+  const reduxUser = useAppSelector((state) => state.auth.user);
+  const reduxLoading = useAppSelector((state) => state.auth.isLoading);
+  const reduxError = useAppSelector((state) => state.auth.error);
+  
+  // AuthContext fallback
+  const { user: contextUser } = useAuth();
+  
+  // Use Redux user if available, fallback to context user
+  const user = reduxUser || contextUser;
+  const loading = reduxLoading;
+  const error = reduxError;
+
+  const { showSuccessToast, showErrorToast } = useToasts();
+  
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [settingsModalVisible, setSettingsModalVisible] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
 
   useEffect(() => {
-    fetchProfile();
-  }, []);
-
-  const fetchProfile = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const profileData = await getUserProfile();
-      setProfile(profileData);
-    } catch (err: any) {
-      console.error('Error fetching profile:', err);
-      setError(err.message || 'Failed to load profile');
-      // Fallback to context user if API fails
-      if (contextUser) {
-        setProfile(contextUser);
-      }
-    } finally {
-      setLoading(false);
+    // Try to fetch fresh profile data from Redux
+    if (reduxUser) {
+      dispatch(fetchUserProfileAsync());
     }
-  };
+  }, [dispatch, reduxUser]);
 
   const handleLogout = async () => {
     Alert.alert(
@@ -71,10 +78,18 @@ export default function ProfileTab() {
           onPress: async () => {
             try {
               setLoggingOut(true);
-              await logout();
-            } catch (error) {
+              
+              // Try Redux logout first, fallback to AuthContext
+              if (reduxUser) {
+                await dispatch(logoutAsync()).unwrap();
+              } else {
+                await authLogout();
+              }
+              
+              showSuccessToast('Signed Out', 'You have been signed out successfully');
+            } catch (error: any) {
               console.error('Logout error:', error);
-              Alert.alert('Error', 'Failed to sign out. Please try again.');
+              showErrorToast('Error', 'Failed to sign out. Please try again.');
             } finally {
               setLoggingOut(false);
             }
@@ -96,6 +111,14 @@ export default function ProfileTab() {
     }
   };
 
+  // Mock stats for demonstration
+  const userStats = [
+    { icon: MapPin, label: 'Trips Planned', value: '12' },
+    { icon: Camera, label: 'Photos Taken', value: '248' },
+    { icon: Award, label: 'Places Visited', value: '34' },
+    { icon: TrendingUp, label: 'Miles Traveled', value: '15.2K' },
+  ];
+
   if (loading) {
     return (
       <SafeAreaView style={styles.container}>
@@ -107,14 +130,14 @@ export default function ProfileTab() {
     );
   }
 
-  if (error && !profile) {
+  if (error && !user) {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.errorContainer}>
           <Text style={styles.errorText}>{error}</Text>
           <Button
             title="Retry"
-            onPress={fetchProfile}
+            onPress={() => dispatch(fetchUserProfileAsync())}
             variant="primary"
             size="medium"
             style={styles.retryButton}
@@ -131,8 +154,12 @@ export default function ProfileTab() {
           {/* Header */}
           <View style={styles.header}>
             <Text style={styles.title}>Profile</Text>
-            <TouchableOpacity style={styles.settingsButton} activeOpacity={0.7}>
-              <Settings size={24} color={theme.semanticColors.text.secondary} />
+            <TouchableOpacity 
+              style={styles.settingsButton} 
+              activeOpacity={0.7}
+              onPress={() => setSettingsModalVisible(true)}
+            >
+              <Settings size={24} color={theme.text.secondary} />
             </TouchableOpacity>
           </View>
 
@@ -140,28 +167,51 @@ export default function ProfileTab() {
           <Card style={styles.profileCard}>
             <View style={styles.profileHeader}>
               <View style={styles.avatarContainer}>
-                {profile?.profile_picture_url ? (
+                {user?.profile_picture_url ? (
                   <Image
-                    source={{ uri: profile.profile_picture_url }}
+                    source={{ uri: user.profile_picture_url }}
                     style={styles.avatar}
                   />
                 ) : (
                   <View style={styles.avatarPlaceholder}>
-                    <User size={40} color={theme.semanticColors.text.inverse} />
+                    <User size={40} color={theme.text.inverse} />
                   </View>
                 )}
-                <TouchableOpacity style={styles.editAvatarButton} activeOpacity={0.7}>
-                  <Edit3 size={16} color={theme.semanticColors.text.inverse} />
+                <TouchableOpacity 
+                  style={styles.editAvatarButton} 
+                  activeOpacity={0.7}
+                  onPress={() => setEditModalVisible(true)}
+                >
+                  <Edit3 size={16} color={theme.text.inverse} />
                 </TouchableOpacity>
               </View>
               
               <View style={styles.profileInfo}>
-                <Text style={styles.username}>{profile?.username || 'Unknown User'}</Text>
+                <Text style={styles.username}>{user?.username || 'Unknown User'}</Text>
                 <View style={styles.emailContainer}>
-                  <Mail size={16} color={theme.semanticColors.text.secondary} />
-                  <Text style={styles.email}>{profile?.email || 'No email'}</Text>
+                  <Mail size={16} color={theme.text.secondary} />
+                  <Text style={styles.email}>{user?.email || 'No email'}</Text>
                 </View>
+                <Text style={styles.memberSince}>
+                  Member since {user?.created_at ? formatDate(user.created_at) : 'Unknown'}
+                </Text>
               </View>
+            </View>
+          </Card>
+
+          {/* Stats Grid */}
+          <Card style={styles.statsCard}>
+            <Text style={styles.sectionTitle}>Travel Stats</Text>
+            <View style={styles.statsGrid}>
+              {userStats.map((stat, index) => (
+                <View key={index} style={styles.statItem}>
+                  <View style={styles.statIconContainer}>
+                    <stat.icon size={24} color={theme.colors.primary[500]} />
+                  </View>
+                  <Text style={styles.statValue}>{stat.value}</Text>
+                  <Text style={styles.statLabel}>{stat.label}</Text>
+                </View>
+              ))}
             </View>
           </Card>
 
@@ -171,27 +221,27 @@ export default function ProfileTab() {
             
             <View style={styles.infoRow}>
               <View style={styles.infoLabel}>
-                <User size={20} color={theme.semanticColors.text.secondary} />
+                <User size={20} color={theme.text.secondary} />
                 <Text style={styles.infoLabelText}>Username</Text>
               </View>
-              <Text style={styles.infoValue}>{profile?.username || 'Not set'}</Text>
+              <Text style={styles.infoValue}>{user?.username || 'Not set'}</Text>
             </View>
 
             <View style={styles.infoRow}>
               <View style={styles.infoLabel}>
-                <Mail size={20} color={theme.semanticColors.text.secondary} />
+                <Mail size={20} color={theme.text.secondary} />
                 <Text style={styles.infoLabelText}>Email</Text>
               </View>
-              <Text style={styles.infoValue}>{profile?.email || 'Not set'}</Text>
+              <Text style={styles.infoValue}>{user?.email || 'Not set'}</Text>
             </View>
 
             <View style={styles.infoRow}>
               <View style={styles.infoLabel}>
-                <Calendar size={20} color={theme.semanticColors.text.secondary} />
+                <Calendar size={20} color={theme.text.secondary} />
                 <Text style={styles.infoLabelText}>Member since</Text>
               </View>
               <Text style={styles.infoValue}>
-                {profile?.created_at ? formatDate(profile.created_at) : 'Unknown'}
+                {user?.created_at ? formatDate(user.created_at) : 'Unknown'}
               </Text>
             </View>
           </Card>
@@ -204,7 +254,7 @@ export default function ProfileTab() {
               </Text>
               <Button
                 title="Refresh"
-                onPress={fetchProfile}
+                onPress={() => dispatch(fetchUserProfileAsync())}
                 variant="secondary"
                 size="small"
                 style={styles.refreshButton}
@@ -216,7 +266,7 @@ export default function ProfileTab() {
           <View style={styles.actionsContainer}>
             <Button
               title="Edit Profile"
-              onPress={() => Alert.alert('Coming Soon', 'Profile editing will be available soon!')}
+              onPress={() => setEditModalVisible(true)}
               variant="secondary"
               size="large"
               style={styles.actionButton}
@@ -233,6 +283,17 @@ export default function ProfileTab() {
           </View>
         </View>
       </ScrollView>
+
+      {/* Modals */}
+      <EditProfileModal
+        isVisible={editModalVisible}
+        onClose={() => setEditModalVisible(false)}
+      />
+      
+      <SettingsModal
+        isVisible={settingsModalVisible}
+        onClose={() => setSettingsModalVisible(false)}
+      />
     </SafeAreaView>
   );
 }
@@ -332,17 +393,57 @@ const styles = StyleSheet.create({
   username: {
     ...theme.h3,
     color: theme.text.primary,
-    marginBottom: theme.spacing[2],
+    marginBottom: theme.spacing[1],
     includeFontPadding: false,
   },
   emailContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginBottom: theme.spacing[1],
   },
   email: {
-    ...theme.body1,
+    ...theme.body2,
     color: theme.text.secondary,
     marginLeft: theme.spacing[2],
+    includeFontPadding: false,
+  },
+  memberSince: {
+    ...theme.caption,
+    color: theme.text.secondary,
+    includeFontPadding: false,
+  },
+  statsCard: {
+    marginBottom: theme.spacing[6],
+  },
+  statsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  statItem: {
+    width: '48%',
+    alignItems: 'center',
+    marginBottom: theme.spacing[4],
+  },
+  statIconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: theme.colors.primary[50],
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: theme.spacing[2],
+  },
+  statValue: {
+    ...theme.h4,
+    color: theme.text.primary,
+    marginBottom: theme.spacing[1],
+    includeFontPadding: false,
+  },
+  statLabel: {
+    ...theme.caption,
+    color: theme.text.secondary,
+    textAlign: 'center',
     includeFontPadding: false,
   },
   infoCard: {
