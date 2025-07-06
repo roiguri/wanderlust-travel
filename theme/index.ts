@@ -72,7 +72,7 @@ export const theme = {
     normal: 250,
     slow: 350,
   },
-} as const;
+};
 
 // Export individual theme parts for convenience
 export { colors, background, surface, text, border, button } from './colors';
