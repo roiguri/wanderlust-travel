@@ -20,7 +20,7 @@ interface ToastProps {
   toast: ToastType;
 }
 
-const Toast: React.FC<ToastProps> = ({ toast }) => {
+export const Toast: React.FC<ToastProps> = ({ toast }) => {
   const { removeToast } = useToasts();
   const translateY = new Animated.Value(-100);
   const translateX = new Animated.Value(0);
@@ -321,5 +321,3 @@ const styles = StyleSheet.create({
     borderRadius: 2,
   },
 });
-
-export default Toast;
