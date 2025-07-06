@@ -22,11 +22,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: theme.spacingPatterns.screen.horizontal,
-    backgroundColor: theme.semanticColors.background,
+    backgroundColor: theme.background,
   },
   text: {
-    ...theme.textStyles.h4,
-    color: theme.semanticColors.text.primary,
+    ...theme.h4,
+    color: theme.text.primary,
     includeFontPadding: false,
   },
   link: {

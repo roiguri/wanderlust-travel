@@ -118,9 +118,9 @@ export default function LoginScreen() {
                   activeOpacity={0.7}
                 >
                   {showPassword ? (
-                    <EyeOff size={20} color={theme.semanticColors.text.secondary} />
+                    <EyeOff size={20} color={theme.text.secondary} />
                   ) : (
-                    <Eye size={20} color={theme.semanticColors.text.secondary} />
+                    <Eye size={20} color={theme.text.secondary} />
                   )}
                 </TouchableOpacity>
               </View>
@@ -159,7 +159,7 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.semanticColors.background,
+    backgroundColor: theme.background,
   },
   keyboardView: {
     flex: 1,
@@ -187,20 +187,20 @@ const styles = StyleSheet.create({
     right: theme.spacingPatterns.screen.horizontal,
   },
   welcomeText: {
-    ...theme.textStyles.h1,
-    color: theme.semanticColors.text.inverse,
+    ...theme.h1,
+    color: theme.text.inverse,
     marginBottom: theme.spacing[2],
     includeFontPadding: false,
   },
   subtitle: {
-    ...theme.textStyles.body1,
-    color: theme.semanticColors.text.inverse,
+    ...theme.body1,
+    color: theme.text.inverse,
     opacity: 0.9,
     includeFontPadding: false,
   },
   formContainer: {
     flex: 1,
-    backgroundColor: theme.semanticColors.surface,
+    backgroundColor: theme.surface,
     borderTopLeftRadius: theme.borderRadius['3xl'],
     borderTopRightRadius: theme.borderRadius['3xl'],
     marginTop: -theme.spacing[6],
@@ -212,8 +212,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   formTitle: {
-    ...theme.textStyles.h3,
-    color: theme.semanticColors.text.primary,
+    ...theme.h3,
+    color: theme.text.primary,
     marginBottom: theme.spacing[6],
     textAlign: 'center',
     includeFontPadding: false,
@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: theme.colors.error,
-    ...theme.textStyles.body2,
+    ...theme.body2,
     fontWeight: theme.typography.fontWeights.medium,
     textAlign: 'center',
     includeFontPadding: false,
@@ -257,12 +257,12 @@ const styles = StyleSheet.create({
   dividerLine: {
     flex: 1,
     height: 1,
-    backgroundColor: theme.semanticColors.border.light,
+    backgroundColor: theme.border.light,
   },
   dividerText: {
     marginHorizontal: theme.spacing[4],
-    ...theme.textStyles.body2,
-    color: theme.semanticColors.text.secondary,
+    ...theme.body2,
+    color: theme.text.secondary,
     includeFontPadding: false,
   },
   signupContainer: {
@@ -272,12 +272,12 @@ const styles = StyleSheet.create({
     marginTop: theme.spacing[4],
   },
   signupText: {
-    ...theme.textStyles.body1,
-    color: theme.semanticColors.text.secondary,
+    ...theme.body1,
+    color: theme.text.secondary,
     includeFontPadding: false,
   },
   signupLink: {
-    ...theme.textStyles.body1,
+    ...theme.body1,
     color: theme.colors.primary[500],
     fontWeight: theme.typography.fontWeights.semibold,
     includeFontPadding: false,

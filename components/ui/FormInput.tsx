@@ -51,7 +51,7 @@ export default function FormInput({
           setIsFocused(false);
           textInputProps.onBlur?.(e);
         }}
-        placeholderTextColor={theme.semanticColors.text.disabled}
+        placeholderTextColor={theme.text.disabled}
       />
       {error && <Text style={styles.errorText}>{error}</Text>}
     </View>
@@ -63,8 +63,8 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacingPatterns.form.fieldGap,
   },
   label: {
-    ...theme.textStyles.label,
-    color: theme.semanticColors.text.primary,
+    ...theme.label,
+    color: theme.text.primary,
     marginBottom: theme.spacing[2],
     includeFontPadding: false,
   },
@@ -74,13 +74,13 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: theme.semanticColors.border.default,
+    borderColor: theme.border.default,
     borderRadius: theme.componentRadius.input,
     paddingHorizontal: theme.sizes.input.paddingHorizontal,
     paddingVertical: theme.sizes.input.paddingVertical,
-    ...theme.textStyles.body1,
-    backgroundColor: theme.semanticColors.surface,
-    color: theme.semanticColors.text.primary,
+    ...theme.body1,
+    backgroundColor: theme.surface,
+    color: theme.text.primary,
     minHeight: theme.sizes.input.height,
     ...theme.shadows.xs,
     includeFontPadding: false,
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.error,
   },
   errorText: {
-    ...theme.textStyles.caption,
+    ...theme.caption,
     color: theme.colors.error,
     marginTop: theme.spacing[1],
     fontWeight: theme.typography.fontWeights.medium,

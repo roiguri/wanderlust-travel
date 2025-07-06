@@ -3,18 +3,38 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useFrameworkReady } from '@/hooks/useFrameworkReady';
 import { AuthProvider } from '@/contexts/AuthContext';
+import { ReduxProvider } from '@/contexts/ReduxProvider';
+import { ToastContainer } from '@/components/ui/Toast';
+import SettingsModal from '@/components/modals/SettingsModal';
+import { useAppSelector } from '@/store/hooks';
+import { useModals } from '@/hooks/useUI';
 
-export default function RootLayout() {
-  useFrameworkReady();
+function AppContent() {
+  const toasts = useAppSelector((state) => state.ui.toasts);
+  const { isSettingsOpen, closeSettings } = useModals();
 
   return (
-    <AuthProvider>
+    <>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(auth)" />
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />
-    </AuthProvider>
+      <ToastContainer toasts={toasts} />
+      <SettingsModal isVisible={isSettingsOpen} onClose={closeSettings} />
+    </>
+  );
+}
+
+export default function RootLayout() {
+  useFrameworkReady();
+
+  return (
+    <ReduxProvider>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </ReduxProvider>
   );
 }

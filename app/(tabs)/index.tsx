@@ -5,30 +5,49 @@ import FormInput from '@/components/ui/FormInput';
 import Card from '@/components/ui/Card';
 import { useState } from 'react';
 import { theme } from '@/theme';
+import { useToasts, useLoading, useModals } from '@/hooks/useUI';
 
 export default function ExploreTab() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  
+  const { showSuccessToast, showErrorToast, showWarningToast, showInfoToast } = useToasts();
+  const { setGlobalLoading } = useLoading();
+  const { openSettings, closeSettings } = useModals();
 
   const handlePrimaryAction = () => {
-    Alert.alert('Primary Button', 'Primary button pressed!');
+    showSuccessToast('Success!', 'Primary button was pressed successfully.');
   };
 
   const handleSecondaryAction = () => {
-    Alert.alert('Secondary Button', 'Secondary button pressed!');
+    showInfoToast('Info', 'Secondary button was pressed.');
   };
 
   const handleCardPress = () => {
-    Alert.alert('Card Pressed', 'Interactive card was tapped!');
+    showWarningToast('Card Tapped', 'You tapped an interactive card.');
   };
 
   const handleLogin = async () => {
     setLoading(true);
+    setGlobalLoading(true);
     // Simulate API call
     setTimeout(() => {
       setLoading(false);
-      Alert.alert('Login', `Email: ${email}`);
+      setGlobalLoading(false);
+      if (email && password) {
+        showSuccessToast('Login Successful', `Welcome back, ${email}!`);
+      } else {
+        showErrorToast('Login Failed', 'Please enter both email and password.');
+      }
+    }, 2000);
+  };
+  
+  const handleTestModal = () => {
+    openSettings();
+    setTimeout(() => {
+      closeSettings();
+      showInfoToast('Modal Test', 'Modal was opened and closed automatically.');
     }, 2000);
   };
 
@@ -37,12 +56,12 @@ export default function ExploreTab() {
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <View style={styles.content}>
           <Text style={styles.title}>Design System</Text>
-          <Text style={styles.subtitle}>Airbnb-inspired components for our trip planning app</Text>
+          <Text style={styles.subtitle}>Airbnb-inspired components with Redux UI state management</Text>
           
           {/* Button Examples */}
           <Card style={styles.section}>
             <Text style={styles.sectionTitle}>Buttons</Text>
-            <Text style={styles.sectionDescription}>Primary and secondary button variants with different sizes</Text>
+            <Text style={styles.sectionDescription}>Button variants with toast notifications and loading states</Text>
             
             <View style={styles.buttonRow}>
               <Button
@@ -93,12 +112,22 @@ export default function ExploreTab() {
                 loading={loading}
               />
             </View>
+            
+            <View style={styles.buttonRow}>
+              <Button
+                title="Test Modal"
+                onPress={handleTestModal}
+                variant="secondary"
+                size="small"
+                style={styles.buttonSpacing}
+              />
+            </View>
           </Card>
 
           {/* Form Input Examples */}
           <Card style={styles.section}>
             <Text style={styles.sectionTitle}>Form Inputs</Text>
-            <Text style={styles.sectionDescription}>Clean, accessible form inputs with validation states</Text>
+            <Text style={styles.sectionDescription}>Form inputs with global loading and toast feedback</Text>
             
             <FormInput
               label="Email Address"
@@ -137,7 +166,7 @@ export default function ExploreTab() {
           {/* Card Examples */}
           <Card style={styles.section}>
             <Text style={styles.sectionTitle}>Cards</Text>
-            <Text style={styles.sectionDescription}>Flexible card components with different variants</Text>
+            <Text style={styles.sectionDescription}>Interactive cards with toast notifications</Text>
           </Card>
           
           <Card variant="elevated" style={styles.section}>
@@ -157,8 +186,50 @@ export default function ExploreTab() {
           <Card onPress={handleCardPress} style={styles.section}>
             <Text style={styles.cardTitle}>Interactive Card</Text>
             <Text style={styles.cardDescription}>
-              This card is pressable and will show feedback when tapped. Tap me to see it in action!
+              This card shows toast notifications when tapped. Tap me to see the UI state management in action!
             </Text>
+          </Card>
+          
+          {/* UI State Demo */}
+          <Card style={styles.section}>
+            <Text style={styles.sectionTitle}>UI State Management</Text>
+            <Text style={styles.sectionDescription}>
+              This demo showcases Redux-powered UI state including toasts, loading states, and modal management.
+            </Text>
+            
+            <View style={styles.buttonRow}>
+              <Button
+                title="Success Toast"
+                onPress={() => showSuccessToast('Success!', 'This is a success message.')}
+                variant="primary"
+                size="small"
+                style={styles.buttonSpacing}
+              />
+              <Button
+                title="Error Toast"
+                onPress={() => showErrorToast('Error!', 'This is an error message.')}
+                variant="secondary"
+                size="small"
+                style={styles.buttonSpacing}
+              />
+            </View>
+            
+            <View style={styles.buttonRow}>
+              <Button
+                title="Warning Toast"
+                onPress={() => showWarningToast('Warning!', 'This is a warning message.')}
+                variant="primary"
+                size="small"
+                style={styles.buttonSpacing}
+              />
+              <Button
+                title="Info Toast"
+                onPress={() => showInfoToast('Info', 'This is an info message.')}
+                variant="secondary"
+                size="small"
+                style={styles.buttonSpacing}
+              />
+            </View>
           </Card>
         </View>
       </ScrollView>
@@ -169,7 +240,7 @@ export default function ExploreTab() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.semanticColors.background,
+    backgroundColor: theme.background,
   },
   scrollView: {
     flex: 1,
@@ -178,15 +249,15 @@ const styles = StyleSheet.create({
     padding: theme.spacingPatterns.screen.horizontal,
   },
   title: {
-    ...theme.textStyles.h2,
-    color: theme.semanticColors.text.primary,
+    ...theme.h2,
+    color: theme.text.primary,
     marginBottom: theme.spacing[2],
     textAlign: 'center',
     includeFontPadding: false,
   },
   subtitle: {
-    ...theme.textStyles.body1,
-    color: theme.semanticColors.text.secondary,
+    ...theme.body1,
+    color: theme.text.secondary,
     textAlign: 'center',
     marginBottom: theme.spacing[6],
     includeFontPadding: false,
@@ -195,14 +266,14 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing[6],
   },
   sectionTitle: {
-    ...theme.textStyles.h4,
-    color: theme.semanticColors.text.primary,
+    ...theme.h4,
+    color: theme.text.primary,
     marginBottom: theme.spacing[2],
     includeFontPadding: false,
   },
   sectionDescription: {
-    ...theme.textStyles.body2,
-    color: theme.semanticColors.text.secondary,
+    ...theme.body2,
+    color: theme.text.secondary,
     marginBottom: theme.spacing[4],
     includeFontPadding: false,
   },
@@ -216,14 +287,14 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing[2],
   },
   cardTitle: {
-    ...theme.textStyles.h5,
-    color: theme.semanticColors.text.primary,
+    ...theme.h5,
+    color: theme.text.primary,
     marginBottom: theme.spacing[2],
     includeFontPadding: false,
   },
   cardDescription: {
-    ...theme.textStyles.body2,
-    color: theme.semanticColors.text.secondary,
+    ...theme.body2,
+    color: theme.text.secondary,
     includeFontPadding: false,
   },
 });

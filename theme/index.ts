@@ -1,14 +1,18 @@
 // Main theme configuration
-import { colors, semanticColors } from './colors';
+import { colors, background, surface, text, border, button } from './colors';
 import { spacing, spacingPatterns } from './spacing';
-import { typography, textStyles } from './typography';
+import { typography, h1, h2, h3, h4, h5, h6, body1, body2, buttonText, caption, label } from './typography';
 import { shadows, componentShadows } from './shadows';
 import { borderRadius, componentRadius } from './borderRadius';
 
 export const theme = {
   // Color system
   colors,
-  semanticColors,
+  background,
+  surface,
+  text,
+  border,
+  button,
   
   // Spacing system
   spacing,
@@ -16,7 +20,17 @@ export const theme = {
   
   // Typography system
   typography,
-  textStyles,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  body1,
+  body2,
+  buttonText,
+  caption,
+  label,
   
   // Shadow system
   shadows,
@@ -58,19 +72,18 @@ export const theme = {
     normal: 250,
     slow: 350,
   },
-} as const;
+};
 
 // Export individual theme parts for convenience
-export { colors, semanticColors } from './colors';
+export { colors, background, surface, text, border, button } from './colors';
 export { spacing, spacingPatterns } from './spacing';
-export { typography, textStyles } from './typography';
+export { typography, h1, h2, h3, h4, h5, h6, body1, body2, buttonText, caption, label } from './typography';
 export { shadows, componentShadows } from './shadows';
 export { borderRadius, componentRadius } from './borderRadius';
 
 // Type definitions for theme
 export type Theme = typeof theme;
 export type ThemeColors = typeof colors;
-export type SemanticColors = typeof semanticColors;
 export type Spacing = typeof spacing;
 export type Typography = typeof typography;
 export type Shadows = typeof shadows;
