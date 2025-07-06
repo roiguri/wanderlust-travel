@@ -31,6 +31,16 @@ export const selectTripsFilters = createSelector(
   (trips) => trips.filters
 );
 
+export const selectSearchQuery = createSelector(
+  [selectTripsState],
+  (trips) => trips.searchQuery
+);
+
+export const selectSelectedTripIds = createSelector(
+  [selectTripsState],
+  (trips) => trips.selectedTripIds
+);
+
 export const selectLastFetch = createSelector(
   [selectTripsState],
   (trips) => trips.lastFetch
@@ -76,11 +86,16 @@ export const selectFilteredTrips = createSelector(
       const aValue = a[filters.sortBy];
       const bValue = b[filters.sortBy];
       
-      if (filters.sortOrder === 'asc') {
-        return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
-      } else {
-        return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+      let comparison = 0;
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        comparison = aValue.localeCompare(bValue);
+      } else if (aValue < bValue) {
+        comparison = -1;
+      } else if (aValue > bValue) {
+        comparison = 1;
       }
+      
+      return filters.sortOrder === 'asc' ? comparison : -comparison;
     });
 
     return filteredTrips;
@@ -168,6 +183,14 @@ export const selectTripStats = createSelector(
   }
 );
 
+// Selected trips
+export const selectSelectedTrips = createSelector(
+  [selectAllTrips, selectSelectedTripIds],
+  (trips, selectedIds) => {
+    return trips.filter(trip => selectedIds.includes(trip.id));
+  }
+);
+
 // Check if trips data needs refresh (older than 5 minutes)
 export const selectShouldRefreshTrips = createSelector(
   [selectLastFetch],
@@ -176,5 +199,39 @@ export const selectShouldRefreshTrips = createSelector(
     
     const fiveMinutesAgo = Date.now() - 5 * 60 * 1000;
     return lastFetch < fiveMinutesAgo;
+  }
+);
+
+// Check if there are any active filters
+export const selectHasActiveFilters = createSelector(
+  [selectTripsFilters],
+  (filters) => {
+    return (
+      filters.status !== 'all' ||
+      filters.search.trim() !== '' ||
+      filters.dateRange !== undefined ||
+      filters.sortBy !== 'created_at' ||
+      filters.sortOrder !== 'desc'
+    );
+  }
+);
+
+// Get trips by specific status
+export const selectTripsBySpecificStatus = (status: Trip['status']) =>
+  createSelector(
+    [selectAllTrips],
+    (trips) => trips.filter(trip => trip.status === status)
+  );
+
+// Get recent trips (created in last 7 days)
+export const selectRecentTrips = createSelector(
+  [selectAllTrips],
+  (trips) => {
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    
+    return trips.filter(trip => {
+      const createdAt = new Date(trip.created_at);
+      return createdAt >= sevenDaysAgo;
+    }).sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
   }
 );
