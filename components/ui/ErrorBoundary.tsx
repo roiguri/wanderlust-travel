@@ -1,6 +1,6 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { AlertTriangle } from 'lucide-react-native';
+import { TriangleAlert as AlertTriangle } from 'lucide-react-native';
 import { theme } from '@/theme';
 import Button from './Button';
 
