@@ -18,3 +18,5 @@ interface CreateTripModalProps {
   isVisible: boolean;
   return <CreateTripFlow isVisible={isVisible} onClose={onClose} />;
 }
+
+export default CreateTripFlow
