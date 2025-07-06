@@ -4,6 +4,8 @@ import { StatusBar } from 'expo-status-bar';
 import { useFrameworkReady } from '@/hooks/useFrameworkReady';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { ReduxProvider } from '@/contexts/ReduxProvider';
+import { ToastContainer } from '@/components/ui/Toast';
+import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
 
 export default function RootLayout() {
   useFrameworkReady();
@@ -17,6 +19,8 @@ export default function RootLayout() {
           <Stack.Screen name="+not-found" />
         </Stack>
         <StatusBar style="auto" />
+        <ToastContainer />
+        <LoadingOverlay />
       </AuthProvider>
     </ReduxProvider>
   );

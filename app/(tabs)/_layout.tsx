@@ -1,4 +1,5 @@
 import { Tabs } from 'expo-router';
+import { useEffect } from 'react';
 import { 
   Search, 
   MapPin, 
@@ -7,8 +8,16 @@ import {
   User 
 } from 'lucide-react-native';
 import { theme } from '@/theme';
+import { useUI } from '@/hooks/useUI';
 
 export default function TabLayout() {
+  const { setActiveTab } = useUI();
+
+  // Track tab changes in Redux state
+  const handleTabPress = (tabName: 'explore' | 'trips' | 'recording' | 'map' | 'profile') => {
+    setActiveTab(tabName);
+  };
+
   return (
     <Tabs
       screenOptions={{
@@ -37,6 +46,9 @@ export default function TabLayout() {
             <Search size={size} color={color} />
           ),
         }}
+        listeners={{
+          tabPress: () => handleTabPress('explore'),
+        }}
       />
       <Tabs.Screen
         name="trips"
@@ -45,6 +57,9 @@ export default function TabLayout() {
           tabBarIcon: ({ size, color }) => (
             <MapPin size={size} color={color} />
           ),
+        }}
+        listeners={{
+          tabPress: () => handleTabPress('trips'),
         }}
       />
       <Tabs.Screen
@@ -55,6 +70,9 @@ export default function TabLayout() {
             <Camera size={size} color={color} />
           ),
         }}
+        listeners={{
+          tabPress: () => handleTabPress('recording'),
+        }}
       />
       <Tabs.Screen
         name="map"
@@ -64,6 +82,9 @@ export default function TabLayout() {
             <Map size={size} color={color} />
           ),
         }}
+        listeners={{
+          tabPress: () => handleTabPress('map'),
+        }}
       />
       <Tabs.Screen
         name="profile"
@@ -72,6 +93,9 @@ export default function TabLayout() {
           tabBarIcon: ({ size, color }) => (
             <User size={size} color={color} />
           ),
+        }}
+        listeners={{
+          tabPress: () => handleTabPress('profile'),
         }}
       />
     </Tabs>
