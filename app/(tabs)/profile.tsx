@@ -17,18 +17,7 @@ import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import EditProfileModal from '@/components/modals/EditProfileModal';
 import SettingsModal from '@/components/modals/SettingsModal';
-import { 
-  User, 
-  Settings, 
-  LogOut, 
-  Mail, 
-  Calendar, 
-  Edit3,
-  MapPin,
-  Camera,
-  Award,
-  TrendingUp
-} from 'lucide-react-native';
+import { User, Settings, LogOut, Mail, Calendar, CreditCard as Edit3, MapPin, Camera, Award, TrendingUp } from 'lucide-react-native';
 import { theme } from '@/theme';
 import { useToasts } from '@/hooks/useUI';
 
