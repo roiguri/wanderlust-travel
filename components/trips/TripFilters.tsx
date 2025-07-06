@@ -6,14 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import { 
-  Filter, 
-  Search, 
-  Calendar, 
-  ArrowUpDown,
-  X,
-  CheckCircle,
-} from 'lucide-react-native';
+import { Filter, Search, Calendar, ArrowUpDown, X, CircleCheck as CheckCircle } from 'lucide-react-native';
 import Modal from '@/components/ui/Modal';
 import FormInput from '@/components/ui/FormInput';
 import Button from '@/components/ui/Button';
