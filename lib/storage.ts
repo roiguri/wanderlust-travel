@@ -13,26 +13,26 @@ interface StorageInterface {
 const getStorage = (): StorageInterface => {
   // For web platform
   if (Platform.OS === 'web') {
-    // Check if we're in a browser environment
-    if (typeof window !== 'undefined' && window.localStorage) {
+    // Check if we're in a browser environment with proper globals
+    if (typeof window !== 'undefined' && typeof window.localStorage !== 'undefined') {
       return {
         getItem: async (key: string) => {
           try {
-            return localStorage.getItem(key);
+            return window.localStorage.getItem(key);
           } catch {
             return null;
           }
         },
         setItem: async (key: string, value: string) => {
           try {
-            localStorage.setItem(key, value);
+            window.localStorage.setItem(key, value);
           } catch {
             // Silently fail if localStorage is not available
           }
         },
         removeItem: async (key: string) => {
           try {
-            localStorage.removeItem(key);
+            window.localStorage.removeItem(key);
           } catch {
             // Silently fail if localStorage is not available
           }
@@ -40,7 +40,7 @@ const getStorage = (): StorageInterface => {
         multiSet: async (keyValuePairs: [string, string][]) => {
           try {
             keyValuePairs.forEach(([key, value]) => {
-              localStorage.setItem(key, value);
+              window.localStorage.setItem(key, value);
             });
           } catch {
             // Silently fail if localStorage is not available
@@ -49,7 +49,7 @@ const getStorage = (): StorageInterface => {
         multiRemove: async (keys: string[]) => {
           try {
             keys.forEach(key => {
-              localStorage.removeItem(key);
+              window.localStorage.removeItem(key);
             });
           } catch {
             // Silently fail if localStorage is not available
