@@ -85,6 +85,21 @@ const Toast: React.FC<ToastProps> = ({ toast }) => {
   const getIconColor = () => {
     switch (toast.type) {
       case 'success':
+        return theme.colors.white;
+      case 'error':
+        return theme.colors.white;
+      case 'warning':
+        return theme.colors.gray[900];
+      case 'info':
+        return theme.colors.white;
+      default:
+        return theme.colors.white;
+    }
+  };
+
+  const getBackgroundColor = () => {
+    switch (toast.type) {
+      case 'success':
         return theme.colors.success;
       case 'error':
         return theme.colors.error;
@@ -97,33 +112,33 @@ const Toast: React.FC<ToastProps> = ({ toast }) => {
     }
   };
 
-  const getBackgroundColor = () => {
+  const getTextColor = () => {
     switch (toast.type) {
       case 'success':
-        return theme.colors.success + '20';
+        return theme.colors.white;
       case 'error':
-        return theme.colors.error + '20';
+        return theme.colors.white;
       case 'warning':
-        return theme.colors.warning + '20';
+        return theme.colors.gray[900];
       case 'info':
-        return theme.colors.info + '20';
+        return theme.colors.white;
       default:
-        return theme.colors.info + '20';
+        return theme.colors.white;
     }
   };
 
-  const getBorderColor = () => {
+  const getCloseButtonColor = () => {
     switch (toast.type) {
       case 'success':
-        return theme.colors.success + '50';
+        return theme.colors.white;
       case 'error':
-        return theme.colors.error + '50';
+        return theme.colors.white;
       case 'warning':
-        return theme.colors.warning + '50';
+        return theme.colors.gray[700];
       case 'info':
-        return theme.colors.info + '50';
+        return theme.colors.white;
       default:
-        return theme.colors.info + '50';
+        return theme.colors.white;
     }
   };
 
@@ -133,7 +148,6 @@ const Toast: React.FC<ToastProps> = ({ toast }) => {
         styles.container,
         {
           backgroundColor: getBackgroundColor(),
-          borderColor: getBorderColor(),
           transform: [{ translateY }],
           opacity,
         },
@@ -145,9 +159,13 @@ const Toast: React.FC<ToastProps> = ({ toast }) => {
         </View>
         
         <View style={styles.textContainer}>
-          <Text style={styles.title}>{toast.title}</Text>
+          <Text style={[styles.title, { color: getTextColor() }]}>
+            {toast.title}
+          </Text>
           {toast.message && (
-            <Text style={styles.message}>{toast.message}</Text>
+            <Text style={[styles.message, { color: getTextColor() }]}>
+              {toast.message}
+            </Text>
           )}
         </View>
         
@@ -156,7 +174,7 @@ const Toast: React.FC<ToastProps> = ({ toast }) => {
           onPress={handleDismiss}
           activeOpacity={0.7}
         >
-          <X size={16} color={theme.semanticColors.text.secondary} />
+          <X size={16} color={getCloseButtonColor()} />
         </TouchableOpacity>
       </View>
     </Animated.View>
@@ -187,10 +205,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing[4],
   },
   container: {
-    borderRadius: theme.borderRadius.lg,
-    borderWidth: 1,
+    borderRadius: theme.componentRadius.card,
     marginBottom: theme.spacing[2],
-    ...theme.shadows.md,
+    ...theme.componentShadows.card,
   },
   content: {
     flexDirection: 'row',
@@ -207,18 +224,18 @@ const styles = StyleSheet.create({
   title: {
     ...theme.textStyles.body1,
     fontWeight: theme.typography.fontWeights.semibold,
-    color: theme.semanticColors.text.primary,
     marginBottom: theme.spacing[1],
     includeFontPadding: false,
   },
   message: {
     ...theme.textStyles.body2,
-    color: theme.semanticColors.text.secondary,
     includeFontPadding: false,
+    opacity: 0.9,
   },
   closeButton: {
     padding: theme.spacing[1],
     marginLeft: theme.spacing[2],
+    borderRadius: theme.borderRadius.sm,
   },
 });
 
