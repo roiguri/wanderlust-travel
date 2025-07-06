@@ -8,7 +8,7 @@ import {
   ViewStyle,
   TouchableOpacity,
 } from 'react-native';
-import { Eye, EyeOff, AlertCircle, CheckCircle } from 'lucide-react-native';
+import { Eye, EyeOff, CircleAlert as AlertCircle, CircleCheck as CheckCircle } from 'lucide-react-native';
 import { theme } from '@/theme';
 
 export interface FormInputProps extends TextInputProps {
