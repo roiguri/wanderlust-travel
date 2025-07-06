@@ -6,6 +6,7 @@ import { Platform } from 'react-native';
 // Import slices
 import authSlice from './slices/authSlice';
 import tripsSlice from './slices/tripsSlice';
+import tripFormSlice from './slices/tripFormSlice';
 import uiSlice from './slices/uiSlice';
 
 // Import API slices
@@ -60,6 +61,7 @@ const getReduxPersistStorage = () => {
 const rootReducer = combineReducers({
   auth: authSlice,
   trips: tripsSlice,
+  tripForm: tripFormSlice,
   ui: uiSlice,
   // Add the API reducer
   [baseApi.reducerPath]: baseApi.reducer,
@@ -71,7 +73,7 @@ const persistConfig = {
   version: 1,
   storage: getReduxPersistStorage(),
   // Only persist auth state to avoid complex object serialization
-  whitelist: ['auth'],
+  whitelist: ['auth', 'tripForm'],
   // Don't persist API cache, trips, and UI state
   blacklist: [baseApi.reducerPath, 'trips', 'ui'],
 };
