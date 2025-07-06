@@ -4,53 +4,69 @@ import {
   StyleSheet,
   ViewStyle,
   TouchableOpacity,
+  Pressable,
 } from 'react-native';
 import { theme } from '@/theme';
 
-interface CardProps {
+export interface CardProps {
   children: React.ReactNode;
-  style?: ViewStyle;
+  variant?: 'default' | 'elevated' | 'outlined' | 'filled';
+  padding?: keyof typeof theme.spacing;
   onPress?: () => void;
-  variant?: 'default' | 'elevated' | 'outlined';
+  onLongPress?: () => void;
+  disabled?: boolean;
+  style?: ViewStyle;
+  pressable?: boolean;
 }
 
 export default function Card({
   children,
-  style,
-  onPress,
   variant = 'default',
+  padding = 4,
+  onPress,
+  onLongPress,
+  disabled = false,
+  style,
+  pressable = false,
 }: CardProps) {
   const cardStyle = [
     styles.base,
     styles[variant],
+    { padding: theme.spacing[padding] },
+    disabled && styles.disabled,
     style,
   ];
 
-  if (onPress) {
+  const isInteractive = onPress || onLongPress || pressable;
+
+  if (isInteractive) {
     return (
-      <TouchableOpacity
-        style={cardStyle}
+      <Pressable
+        style={({ pressed }) => [
+          cardStyle,
+          pressed && !disabled && styles.pressed,
+        ]}
         onPress={onPress}
-        activeOpacity={0.95}
+        onLongPress={onLongPress}
+        disabled={disabled}
+        accessibilityRole="button"
+        accessibilityState={{ disabled }}
       >
         {children}
-      </TouchableOpacity>
+      </Pressable>
     );
   }
 
-  return (
-    <View style={cardStyle}>
-      {children}
-    </View>
-  );
+  return <View style={cardStyle}>{children}</View>;
 }
 
 const styles = StyleSheet.create({
   base: {
     backgroundColor: theme.surface,
     borderRadius: theme.componentRadius.card,
-    padding: theme.spacing[4],
   },
+  
+  // Variants
   default: {
     ...theme.componentShadows.card,
   },
@@ -61,5 +77,18 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: theme.border.default,
     ...theme.shadows.xs,
+  },
+  filled: {
+    backgroundColor: theme.colors.gray[50],
+    ...theme.shadows.xs,
+  },
+  
+  // States
+  disabled: {
+    opacity: 0.6,
+  },
+  pressed: {
+    opacity: 0.8,
+    transform: [{ scale: 0.98 }],
   },
 });

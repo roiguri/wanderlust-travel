@@ -6,16 +6,20 @@ import {
   ViewStyle,
   TextStyle,
   ActivityIndicator,
+  View,
 } from 'react-native';
 import { theme } from '@/theme';
 
-interface ButtonProps {
+export interface ButtonProps {
   title: string;
   onPress: () => void;
-  variant?: 'primary' | 'secondary';
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
   size?: 'small' | 'medium' | 'large';
   disabled?: boolean;
   loading?: boolean;
+  icon?: React.ReactNode;
+  iconPosition?: 'left' | 'right';
+  fullWidth?: boolean;
   style?: ViewStyle;
   textStyle?: TextStyle;
 }
@@ -27,6 +31,9 @@ export default function Button({
   size = 'medium',
   disabled = false,
   loading = false,
+  icon,
+  iconPosition = 'left',
+  fullWidth = false,
   style,
   textStyle,
 }: ButtonProps) {
@@ -34,7 +41,8 @@ export default function Button({
     styles.base,
     styles[variant],
     styles[size],
-    disabled && styles.disabled,
+    fullWidth && styles.fullWidth,
+    (disabled || loading) && styles.disabled,
     style,
   ];
 
@@ -42,9 +50,36 @@ export default function Button({
     styles.baseText,
     styles[`${variant}Text`],
     styles[`${size}Text`],
-    disabled && styles.disabledText,
+    (disabled || loading) && styles.disabledText,
     textStyle,
   ];
+
+  const renderContent = () => {
+    if (loading) {
+      return (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator
+            size="small"
+            color={getLoadingColor(variant)}
+            style={styles.loadingSpinner}
+          />
+          <Text style={textStyles}>Loading...</Text>
+        </View>
+      );
+    }
+
+    if (icon) {
+      return (
+        <View style={[styles.contentContainer, iconPosition === 'right' && styles.contentReverse]}>
+          {iconPosition === 'left' && <View style={styles.iconLeft}>{icon}</View>}
+          <Text style={textStyles}>{title}</Text>
+          {iconPosition === 'right' && <View style={styles.iconRight}>{icon}</View>}
+        </View>
+      );
+    }
+
+    return <Text style={textStyles}>{title}</Text>;
+  };
 
   return (
     <TouchableOpacity
@@ -52,17 +87,26 @@ export default function Button({
       onPress={onPress}
       disabled={disabled || loading}
       activeOpacity={0.8}
+      accessibilityRole="button"
+      accessibilityState={{ disabled: disabled || loading }}
     >
-      {loading ? (
-        <ActivityIndicator
-          color={variant === 'primary' ? theme.button.primary.text : theme.button.primary.background}
-          size="small"
-        />
-      ) : (
-        <Text style={textStyles}>{title}</Text>
-      )}
+      {renderContent()}
     </TouchableOpacity>
   );
+}
+
+function getLoadingColor(variant: string): string {
+  switch (variant) {
+    case 'primary':
+    case 'danger':
+      return theme.text.inverse;
+    case 'secondary':
+    case 'outline':
+    case 'ghost':
+      return theme.colors.primary[500];
+    default:
+      return theme.text.inverse;
+  }
 }
 
 const styles = StyleSheet.create({
@@ -73,48 +117,78 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     ...theme.componentShadows.button,
   },
+  
+  // Variants
   primary: {
-    backgroundColor: theme.button.primary.background,
-    borderColor: theme.button.primary.border,
+    backgroundColor: theme.colors.primary[500],
+    borderColor: theme.colors.primary[500],
   },
   secondary: {
-    backgroundColor: theme.button.secondary.background,
-    borderColor: theme.button.secondary.border,
+    backgroundColor: theme.surface,
+    borderColor: theme.border.default,
   },
-  disabled: {
-    backgroundColor: theme.button.disabled.background,
-    borderColor: theme.button.disabled.border,
-    ...theme.shadows.none,
+  outline: {
+    backgroundColor: 'transparent',
+    borderColor: theme.colors.primary[500],
   },
+  ghost: {
+    backgroundColor: 'transparent',
+    borderColor: 'transparent',
+  },
+  danger: {
+    backgroundColor: theme.colors.error,
+    borderColor: theme.colors.error,
+  },
+  
+  // Sizes
   small: {
-    paddingVertical: theme.sizes.button.small.paddingVertical,
-    paddingHorizontal: theme.sizes.button.small.paddingHorizontal,
+    paddingVertical: theme.spacing[2],
+    paddingHorizontal: theme.spacing[3],
     minHeight: theme.sizes.button.small.height,
   },
   medium: {
-    paddingVertical: theme.sizes.button.medium.paddingVertical,
-    paddingHorizontal: theme.sizes.button.medium.paddingHorizontal,
+    paddingVertical: theme.spacing[3],
+    paddingHorizontal: theme.spacing[4],
     minHeight: theme.sizes.button.medium.height,
   },
   large: {
-    paddingVertical: theme.sizes.button.large.paddingVertical,
-    paddingHorizontal: theme.sizes.button.large.paddingHorizontal,
+    paddingVertical: theme.spacing[4],
+    paddingHorizontal: theme.spacing[6],
     minHeight: theme.sizes.button.large.height,
   },
+  
+  // States
+  disabled: {
+    opacity: 0.5,
+    ...theme.shadows.none,
+  },
+  fullWidth: {
+    width: '100%',
+  },
+  
+  // Text styles
   baseText: {
     ...theme.buttonText,
     textAlign: 'center',
     includeFontPadding: false,
-    textAlignVertical: 'center',
   },
   primaryText: {
-    color: theme.button.primary.text,
+    color: theme.text.inverse,
   },
   secondaryText: {
-    color: theme.button.secondary.text,
+    color: theme.text.primary,
+  },
+  outlineText: {
+    color: theme.colors.primary[500],
+  },
+  ghostText: {
+    color: theme.colors.primary[500],
+  },
+  dangerText: {
+    color: theme.text.inverse,
   },
   disabledText: {
-    color: theme.button.disabled.text,
+    color: theme.text.disabled,
   },
   smallText: {
     fontSize: theme.typography.fontSizes.sm,
@@ -124,5 +198,29 @@ const styles = StyleSheet.create({
   },
   largeText: {
     fontSize: theme.typography.fontSizes.lg,
+  },
+  
+  // Content layout
+  contentContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  contentReverse: {
+    flexDirection: 'row-reverse',
+  },
+  iconLeft: {
+    marginRight: theme.spacing[2],
+  },
+  iconRight: {
+    marginLeft: theme.spacing[2],
+  },
+  loadingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  loadingSpinner: {
+    marginRight: theme.spacing[2],
   },
 });
