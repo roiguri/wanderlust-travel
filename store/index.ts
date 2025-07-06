@@ -3,7 +3,7 @@ import { persistStore, persistReducer } from 'redux-persist';
 import { FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
 import { Platform } from 'react-native';
 
-// Import slices (we'll create these next)
+// Import slices
 import authSlice from './slices/authSlice';
 import tripsSlice from './slices/tripsSlice';
 import uiSlice from './slices/uiSlice';
@@ -65,26 +65,30 @@ const rootReducer = combineReducers({
   [baseApi.reducerPath]: baseApi.reducer,
 });
 
-// Persist configuration
+// Persist configuration - simplified to avoid circular references
 const persistConfig = {
   key: 'root',
   version: 1,
   storage: getReduxPersistStorage(),
-  // Only persist certain slices
-  whitelist: ['auth', 'ui'],
-  // Don't persist API cache and trips (they'll be fetched fresh)
-  blacklist: [baseApi.reducerPath, 'trips'],
+  // Only persist auth state to avoid complex object serialization
+  whitelist: ['auth'],
+  // Don't persist API cache, trips, and UI state
+  blacklist: [baseApi.reducerPath, 'trips', 'ui'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-// Configure store
+// Configure store with simplified middleware
 export const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+        // Ignore these field paths in all actions
+        ignoredActionsPaths: ['meta.arg', 'payload.timestamp'],
+        // Ignore these paths in the state
+        ignoredPaths: ['items.dates'],
       },
     }).concat(baseApi.middleware),
   devTools: __DEV__, // Enable Redux DevTools in development

@@ -9,21 +9,14 @@ import {
   addToast,
   removeToast,
   clearToasts,
-  setLoading,
   setGlobalLoading,
-  setError,
-  clearError,
-  clearAllErrors,
   setSearchQuery,
   addRecentSearch,
   clearRecentSearches,
-  updatePreferences,
+  setAppReady,
   type Theme,
   type TabName,
   type Toast,
-  type ModalState,
-  type LoadingState,
-  type ErrorState,
 } from '@/store/slices/uiSlice';
 
 // Main UI hook
@@ -45,8 +38,8 @@ export const useUI = () => {
     setOnlineStatus: (isOnline: boolean) => dispatch(setOnlineStatus(isOnline)),
     
     // Modal actions
-    openModal: (modal: keyof ModalState) => dispatch(openModal(modal)),
-    closeModal: (modal: keyof ModalState) => dispatch(closeModal(modal)),
+    openModal: (modal: 'settings') => dispatch(openModal(modal)),
+    closeModal: (modal: 'settings') => dispatch(closeModal(modal)),
     closeAllModals: () => dispatch(closeAllModals()),
     
     // Toast actions
@@ -55,24 +48,15 @@ export const useUI = () => {
     clearToasts: () => dispatch(clearToasts()),
     
     // Loading actions
-    setLoading: (key: keyof LoadingState, isLoading: boolean) => 
-      dispatch(setLoading({ key, isLoading })),
     setGlobalLoading: (isLoading: boolean) => dispatch(setGlobalLoading(isLoading)),
-    
-    // Error actions
-    setError: (key: keyof ErrorState, error: string | null) => 
-      dispatch(setError({ key, error })),
-    clearError: (key: keyof ErrorState) => dispatch(clearError(key)),
-    clearAllErrors: () => dispatch(clearAllErrors()),
     
     // Search actions
     setSearchQuery: (query: string) => dispatch(setSearchQuery(query)),
     addRecentSearch: (query: string) => dispatch(addRecentSearch(query)),
     clearRecentSearches: () => dispatch(clearRecentSearches()),
     
-    // Preferences actions
-    updatePreferences: (preferences: Partial<typeof ui.preferences>) => 
-      dispatch(updatePreferences(preferences)),
+    // App state actions
+    setAppReady: (isReady: boolean) => dispatch(setAppReady(isReady)),
   };
 };
 
@@ -149,11 +133,11 @@ export const useModals = () => {
   const dispatch = useAppDispatch();
   const modals = useAppSelector((state) => state.ui.modals);
 
-  const openModal = (modal: keyof ModalState) => {
+  const openModal = (modal: 'settings') => {
     dispatch(openModal(modal));
   };
 
-  const closeModal = (modal: keyof ModalState) => {
+  const closeModal = (modal: 'settings') => {
     dispatch(closeModal(modal));
   };
 
@@ -161,12 +145,8 @@ export const useModals = () => {
     dispatch(closeAllModals());
   };
 
-  const isModalOpen = (modal: keyof ModalState) => {
+  const isModalOpen = (modal: 'settings') => {
     return modals[modal];
-  };
-
-  const isAnyModalOpen = () => {
-    return Object.values(modals).some(isOpen => isOpen);
   };
 
   return {
@@ -175,7 +155,6 @@ export const useModals = () => {
     closeModal,
     closeAllModals,
     isModalOpen,
-    isAnyModalOpen,
   };
 };
 
@@ -183,62 +162,14 @@ export const useLoading = () => {
   const dispatch = useAppDispatch();
   const loading = useAppSelector((state) => state.ui.loading);
 
-  const setLoading = (key: keyof LoadingState, isLoading: boolean) => {
-    dispatch(setLoading({ key, isLoading }));
-  };
-
   const setGlobalLoading = (isLoading: boolean) => {
     dispatch(setGlobalLoading(isLoading));
   };
 
-  const isLoading = (key: keyof LoadingState) => {
-    return loading[key];
-  };
-
-  const isAnyLoading = () => {
-    return Object.values(loading).some(isLoading => isLoading);
-  };
-
   return {
     loading,
-    setLoading,
     setGlobalLoading,
-    isLoading,
-    isAnyLoading,
-  };
-};
-
-export const useErrors = () => {
-  const dispatch = useAppDispatch();
-  const errors = useAppSelector((state) => state.ui.errors);
-
-  const setError = (key: keyof ErrorState, error: string | null) => {
-    dispatch(setError({ key, error }));
-  };
-
-  const clearError = (key: keyof ErrorState) => {
-    dispatch(clearError(key));
-  };
-
-  const clearAllErrors = () => {
-    dispatch(clearAllErrors());
-  };
-
-  const hasError = (key: keyof ErrorState) => {
-    return !!errors[key];
-  };
-
-  const hasAnyError = () => {
-    return Object.values(errors).some(error => !!error);
-  };
-
-  return {
-    errors,
-    setError,
-    clearError,
-    clearAllErrors,
-    hasError,
-    hasAnyError,
+    isLoading: loading.global,
   };
 };
 
